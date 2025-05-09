@@ -19,8 +19,6 @@
 public struct NIOIPProtocol: RawRepresentable, Hashable, Sendable {
     public typealias RawValue = UInt8
     public var rawValue: RawValue
-
-    @inlinable
     public init(rawValue: RawValue) {
         self.rawValue = rawValue
     }

@@ -19,7 +19,6 @@
 /// the channel becomes writable again.
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 public struct NIOAsyncChannelOutboundWriter<OutboundOut: Sendable>: Sendable {
-    @usableFromInline
     typealias _Writer = NIOAsyncWriter<
         OutboundOut,
         NIOAsyncChannelHandlerWriterDelegate<OutboundOut>
@@ -28,14 +27,8 @@ public struct NIOAsyncChannelOutboundWriter<OutboundOut: Sendable>: Sendable {
     /// An `AsyncSequence` backing a ``NIOAsyncChannelOutboundWriter`` for testing purposes.
     public struct TestSink: AsyncSequence {
         public typealias Element = OutboundOut
-
-        @usableFromInline
         internal let stream: AsyncStream<OutboundOut>
-
-        @usableFromInline
         internal let continuation: AsyncStream<OutboundOut>.Continuation
-
-        @inlinable
         init(
             stream: AsyncStream<OutboundOut>,
             continuation: AsyncStream<OutboundOut>.Continuation
@@ -49,10 +42,7 @@ public struct NIOAsyncChannelOutboundWriter<OutboundOut: Sendable>: Sendable {
         }
 
         public struct AsyncIterator: AsyncIteratorProtocol {
-            @usableFromInline
             internal var iterator: AsyncStream<OutboundOut>.AsyncIterator
-
-            @inlinable
             init(iterator: AsyncStream<OutboundOut>.AsyncIterator) {
                 self.iterator = iterator
             }
@@ -62,19 +52,14 @@ public struct NIOAsyncChannelOutboundWriter<OutboundOut: Sendable>: Sendable {
             }
         }
     }
-
-    @usableFromInline
     enum Backing: Sendable {
         case asyncStream(AsyncStream<OutboundOut>.Continuation)
         case writer(_Writer)
     }
-
-    @usableFromInline
     internal let _backing: Backing
 
     /// Creates a new ``NIOAsyncChannelOutboundWriter`` backed by a ``NIOAsyncChannelOutboundWriter/TestSink``.
     /// This is mostly useful for testing purposes where one wants to observe the written data.
-    @inlinable
     public static func makeTestingWriter() -> (Self, TestSink) {
         var continuation: AsyncStream<OutboundOut>.Continuation!
         let asyncStream = AsyncStream<OutboundOut> { continuation = $0 }
@@ -83,8 +68,6 @@ public struct NIOAsyncChannelOutboundWriter<OutboundOut: Sendable>: Sendable {
 
         return (writer, sink)
     }
-
-    @inlinable
     init<InboundIn, ProducerElement>(
         eventLoop: any EventLoop,
         handler: NIOAsyncChannelHandler<InboundIn, ProducerElement, OutboundOut>,
@@ -104,8 +87,6 @@ public struct NIOAsyncChannelOutboundWriter<OutboundOut: Sendable>: Sendable {
 
         self._backing = .writer(writer.writer)
     }
-
-    @inlinable
     init(continuation: AsyncStream<OutboundOut>.Continuation) {
         self._backing = .asyncStream(continuation)
     }
@@ -113,7 +94,6 @@ public struct NIOAsyncChannelOutboundWriter<OutboundOut: Sendable>: Sendable {
     /// Send a write into the ``ChannelPipeline`` and flush it right away.
     ///
     /// This method suspends if the underlying channel is not writable and will resume once the it becomes writable again.
-    @inlinable
     public func write(_ data: OutboundOut) async throws {
         switch self._backing {
         case .asyncStream(let continuation):
@@ -126,7 +106,6 @@ public struct NIOAsyncChannelOutboundWriter<OutboundOut: Sendable>: Sendable {
     /// Send a sequence of writes into the ``ChannelPipeline`` and flush them right away.
     ///
     /// This method suspends if the underlying channel is not writable and will resume once the it becomes writable again.
-    @inlinable
     public func write<Writes: Sequence>(contentsOf sequence: Writes) async throws where Writes.Element == OutboundOut {
         switch self._backing {
         case .asyncStream(let continuation):
@@ -143,7 +122,6 @@ public struct NIOAsyncChannelOutboundWriter<OutboundOut: Sendable>: Sendable {
     /// This will flush after every write.
     ///
     /// This method suspends if the underlying channel is not writable and will resume once the it becomes writable again.
-    @inlinable
     public func write<Writes: AsyncSequence>(contentsOf sequence: Writes) async throws
     where Writes.Element == OutboundOut {
         for try await data in sequence {

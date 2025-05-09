@@ -27,12 +27,9 @@ extension ByteBuffer {
 
         /// Note: Prefer to use the APIs directly on ByteBuffer such as ``ByteBuffer/writeEncodedInteger(_:strategy:)`` and pass `.quic` rather than directly initialising an instance of this strategy
         /// - Parameter requiredBytesHint: An estimate of the bytes required to write integers using this strategy. This parameter is only relevant if calling ``ByteBuffer/writeLengthPrefixed(strategy:writeData:)``
-        @inlinable
         public init(requiredBytesHint: IntegerLength) {
             self.requiredBytesHint = requiredBytesHint.rawValue
         }
-
-        @inlinable
         public func readInteger<IntegerType: FixedWidthInteger>(
             as: IntegerType.Type,
             from buffer: inout ByteBuffer
@@ -84,16 +81,12 @@ extension ByteBuffer {
                 fatalError("QUIC variable-length integer outside of valid range")
             }
         }
-
-        @inlinable
         public func writeInteger<IntegerType: FixedWidthInteger>(
             _ integer: IntegerType,
             to buffer: inout ByteBuffer
         ) -> Int {
             self.writeInteger(integer, reservedCapacity: 0, to: &buffer)
         }
-
-        @inlinable
         public func writeInteger<IntegerType: FixedWidthInteger>(
             _ integer: IntegerType,
             reservedCapacity: Int,
@@ -129,7 +122,6 @@ extension ByteBuffer {
 }
 
 extension NIOBinaryIntegerEncodingStrategy where Self == ByteBuffer.QUICBinaryEncodingStrategy {
-    @inlinable
     /// Encodes bytes as defined in RFC 9000 § 16
     /// - Parameter requiredBytesHint: An estimate of the bytes required to write integers using this strategy. This parameter is only relevant if calling ``ByteBuffer/writeLengthPrefixed(strategy:writeData:)``
     /// - Returns: An instance of ``ByteBuffer/QUICBinaryEncodingStrategy``
@@ -138,8 +130,6 @@ extension NIOBinaryIntegerEncodingStrategy where Self == ByteBuffer.QUICBinaryEn
     ) -> ByteBuffer.QUICBinaryEncodingStrategy {
         ByteBuffer.QUICBinaryEncodingStrategy(requiredBytesHint: requiredBytesHint)
     }
-
-    @inlinable
     /// Encodes bytes as defined in RFC 9000 § 16
     public static var quic: ByteBuffer.QUICBinaryEncodingStrategy { .quic(requiredBytesHint: .four) }
 }

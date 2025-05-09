@@ -16,8 +16,6 @@ import Atomics
 import DequeModule
 import NIOConcurrencyHelpers
 import _NIODataStructures
-
-@usableFromInline
 let _asyncWriterYieldIDCounter = ManagedAtomic<UInt64>(0)
 
 /// The delegate of the ``NIOAsyncWriter``. It is the consumer of the yielded writes to the ``NIOAsyncWriter``.
@@ -66,7 +64,6 @@ public protocol NIOAsyncWriterSinkDelegate: Sendable {
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension NIOAsyncWriterSinkDelegate {
-    @inlinable
     public func didYield(_ element: Element) {
         self.didYield(contentsOf: .init(CollectionOfOne(element)))
     }
@@ -75,42 +72,30 @@ extension NIOAsyncWriterSinkDelegate {
 /// Errors thrown by the ``NIOAsyncWriter``.
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 public struct NIOAsyncWriterError: Error, Hashable, CustomStringConvertible {
-    @usableFromInline
     internal enum _Code: String, Hashable, Sendable {
         case alreadyFinished
     }
-
-    @usableFromInline
     let _code: _Code
 
     public var file: String
 
     public var line: Int
-
-    @inlinable
     init(_code: _Code, file: String, line: Int) {
         self._code = _code
         self.file = file
         self.line = line
     }
-
-    @inlinable
     public static func == (lhs: NIOAsyncWriterError, rhs: NIOAsyncWriterError) -> Bool {
         lhs._code == rhs._code
     }
-
-    @inlinable
     public func hash(into hasher: inout Hasher) {
         hasher.combine(self._code)
     }
 
     /// Indicates that the ``NIOAsyncWriter`` has already finished and is not accepting any more writes.
-    @inlinable
     public static func alreadyFinished(file: String = #fileID, line: Int = #line) -> Self {
         .init(_code: .alreadyFinished, file: file, line: line)
     }
-
-    @inlinable
     public var description: String {
         "NIOAsyncWriterError.\(self._code.rawValue): \(self.file):\(self.line)"
     }
@@ -145,8 +130,6 @@ public struct NIOAsyncWriter<
         public let sink: Sink
         /// The ``writer`` which is the actual ``NIOAsyncWriter`` and should be passed to the producer.
         public let writer: NIOAsyncWriter
-
-        @inlinable
         internal init(
             sink: Sink,
             writer: NIOAsyncWriter
@@ -157,21 +140,13 @@ public struct NIOAsyncWriter<
     }
 
     /// This class is needed to hook the deinit to observe once all references to the ``NIOAsyncWriter`` are dropped.
-    @usableFromInline
     internal final class InternalClass: Sendable {
-        @usableFromInline
         internal let _storage: Storage
-
-        @usableFromInline
         internal let _finishOnDeinit: Bool
-
-        @inlinable
         init(storage: Storage, finishOnDeinit: Bool) {
             self._storage = storage
             self._finishOnDeinit = finishOnDeinit
         }
-
-        @inlinable
         deinit {
             if !self._finishOnDeinit && !self._storage.isWriterFinished {
                 preconditionFailure("Deinited NIOAsyncWriter without calling finish()")
@@ -181,11 +156,7 @@ public struct NIOAsyncWriter<
             }
         }
     }
-
-    @usableFromInline
     internal let _internalClass: InternalClass
-
-    @inlinable
     internal var _storage: Storage {
         self._internalClass._storage
     }
@@ -202,7 +173,6 @@ public struct NIOAsyncWriter<
     ///   - isWritable: The initial writability state of the writer.
     ///   - delegate: The delegate of the writer.
     /// - Returns: A ``NIOAsyncWriter/NewWriter``.
-    @inlinable
     @available(
         *,
         deprecated,
@@ -238,7 +208,6 @@ public struct NIOAsyncWriter<
     ///   deinit based resource tear down.
     ///   - delegate: The delegate of the writer.
     /// - Returns: A ``NIOAsyncWriter/NewWriter``.
-    @inlinable
     public static func makeWriter(
         elementType: Element.Type = Element.self,
         isWritable: Bool,
@@ -254,8 +223,6 @@ public struct NIOAsyncWriter<
 
         return .init(sink: sink, writer: writer)
     }
-
-    @inlinable
     internal init(
         isWritable: Bool,
         finishOnDeinit: Bool,
@@ -280,7 +247,6 @@ public struct NIOAsyncWriter<
     /// This can be called more than once and from multiple `Task`s at the same time.
     ///
     /// - Parameter sequence: The sequence to yield.
-    @inlinable
     public func yield<S: Sequence>(contentsOf sequence: S) async throws where S.Element == Element {
         try await self._storage.yield(contentsOf: sequence)
     }
@@ -297,7 +263,6 @@ public struct NIOAsyncWriter<
     /// This can be called more than once and from multiple `Task`s at the same time.
     ///
     /// - Parameter element: The element to yield.
-    @inlinable
     public func yield(_ element: Element) async throws {
         try await self._storage.yield(element: element)
     }
@@ -312,7 +277,6 @@ public struct NIOAsyncWriter<
     /// to be buffered and will be delivered once the writer becomes writable again.
     ///
     /// - Note: Calling this function more than once has no effect.
-    @inlinable
     public func finish() {
         self._storage.writerFinish(error: nil)
     }
@@ -328,7 +292,6 @@ public struct NIOAsyncWriter<
     ///
     /// - Note: Calling this function more than once has no effect.
     /// - Parameter error: The error indicating why the writer finished.
-    @inlinable
     public func finish(error: Error) {
         self._storage.writerFinish(error: error)
     }
@@ -341,21 +304,13 @@ extension NIOAsyncWriter {
     /// - Important: Once all copies to the ``NIOAsyncWriter/Sink`` are destroyed the ``NIOAsyncWriter`` will get finished.
     public struct Sink {
         /// This class is needed to hook the deinit to observe once all references to the ``NIOAsyncWriter/Sink`` are dropped.
-        @usableFromInline
         internal final class InternalClass: Sendable {
-            @usableFromInline
             internal let _storage: Storage
-
-            @usableFromInline
             internal let _finishOnDeinit: Bool
-
-            @inlinable
             init(storage: Storage, finishOnDeinit: Bool) {
                 self._storage = storage
                 self._finishOnDeinit = finishOnDeinit
             }
-
-            @inlinable
             deinit {
                 if !self._finishOnDeinit && !self._storage.isSinkFinished {
                     preconditionFailure("Deinited NIOAsyncWriter.Sink without calling sink.finish()")
@@ -365,16 +320,10 @@ extension NIOAsyncWriter {
                 }
             }
         }
-
-        @usableFromInline
         internal let _internalClass: InternalClass
-
-        @inlinable
         internal var _storage: Storage {
             self._internalClass._storage
         }
-
-        @inlinable
         init(storage: Storage, finishOnDeinit: Bool) {
             self._internalClass = .init(storage: storage, finishOnDeinit: finishOnDeinit)
         }
@@ -386,7 +335,6 @@ extension NIOAsyncWriter {
         /// subsequent calls to ``NIOAsyncWriterSinkDelegate/didYield(contentsOf:)`` will suspend.
         ///
         /// - Parameter writability: The new writability of the ``NIOAsyncWriter``.
-        @inlinable
         public func setWritability(to writability: Bool) {
             self._storage.setWritability(to: writability)
         }
@@ -397,7 +345,6 @@ extension NIOAsyncWriter {
         /// or ``NIOAsyncWriter/yield(_:)`` will return a ``NIOAsyncWriterError/alreadyFinished(file:line:)`` error.
         ///
         /// - Note: Calling this function more than once has no effect.
-        @inlinable
         public func finish() {
             self._storage.sinkFinish(error: nil)
         }
@@ -408,7 +355,6 @@ extension NIOAsyncWriter {
         /// or ``NIOAsyncWriter/yield(_:)`` will return the passed error parameter.
         ///
         /// - Note: Calling this function more than once has no effect.
-        @inlinable
         public func finish(error: Error) {
             self._storage.sinkFinish(error: error)
         }
@@ -418,31 +364,21 @@ extension NIOAsyncWriter {
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension NIOAsyncWriter {
     /// This is the underlying storage of the writer. The goal of this is to synchronize the access to all state.
-    @usableFromInline
     internal struct Storage: Sendable {
         /// Internal type to generate unique yield IDs.
         ///
         /// This type has reference semantics.
-        @usableFromInline
         struct YieldIDGenerator: Sendable {
             /// A struct representing a unique yield ID.
-            @usableFromInline
             struct YieldID: Equatable, Sendable {
-                @usableFromInline
                 internal var value: UInt64
-
-                @inlinable
                 init(value: UInt64) {
                     self.value = value
                 }
-
-                @inlinable
                 static func == (lhs: Self, rhs: Self) -> Bool {
                     lhs.value == rhs.value
                 }
             }
-
-            @inlinable
             func generateUniqueYieldID() -> YieldID {
                 // Using relaxed is fine here since we do not need any strict ordering just a
                 // unique ID for every yield.
@@ -451,20 +387,12 @@ extension NIOAsyncWriter {
         }
 
         /// The counter used to assign an ID to all our yields.
-        @usableFromInline
         internal let _yieldIDGenerator = YieldIDGenerator()
         /// The state machine.
-        @usableFromInline
         internal let _state: NIOLockedValueBox<State>
-
-        @usableFromInline
         struct State: Sendable {
-            @usableFromInline
             var stateMachine: StateMachine
-            @usableFromInline
             var didSuspend: (@Sendable () -> Void)?
-
-            @inlinable
             init(stateMachine: StateMachine) {
                 self.stateMachine = stateMachine
                 self.didSuspend = nil
@@ -472,24 +400,17 @@ extension NIOAsyncWriter {
         }
 
         /// Hook used in testing.
-        @usableFromInline
         internal func _setDidSuspend(_ didSuspend: (@Sendable () -> Void)?) {
             self._state.withLockedValue {
                 $0.didSuspend = didSuspend
             }
         }
-
-        @inlinable
         internal var isWriterFinished: Bool {
             self._state.withLockedValue { $0.stateMachine.isWriterFinished }
         }
-
-        @inlinable
         internal var isSinkFinished: Bool {
             self._state.withLockedValue { $0.stateMachine.isSinkFinished }
         }
-
-        @inlinable
         internal init(
             isWritable: Bool,
             delegate: Delegate
@@ -497,8 +418,6 @@ extension NIOAsyncWriter {
             let state = State(stateMachine: StateMachine(isWritable: isWritable, delegate: delegate))
             self._state = NIOLockedValueBox(state)
         }
-
-        @inlinable
         internal func setWritability(to writability: Bool) {
             // We must not resume the continuation while holding the lock
             // because it can deadlock in combination with the underlying ulock
@@ -517,8 +436,6 @@ extension NIOAsyncWriter {
                 return
             }
         }
-
-        @inlinable
         internal func yield<S: Sequence>(contentsOf sequence: S) async throws
         where S.Element == Element {
             let yieldID = self._yieldIDGenerator.generateUniqueYieldID()
@@ -531,8 +448,6 @@ extension NIOAsyncWriter {
                 }
             }
         }
-
-        @inlinable
         internal func _yield<S: Sequence>(
             contentsOf sequence: S,
             yieldID: StateMachine.YieldID?
@@ -589,8 +504,6 @@ extension NIOAsyncWriter {
                 }
             }
         }
-
-        @inlinable
         internal func yield(element: Element) async throws {
             let yieldID = self._yieldIDGenerator.generateUniqueYieldID()
             while true {
@@ -602,8 +515,6 @@ extension NIOAsyncWriter {
                 }
             }
         }
-
-        @inlinable
         internal func _yield(
             element: Element,
             yieldID: StateMachine.YieldID?
@@ -659,8 +570,6 @@ extension NIOAsyncWriter {
                 }
             }
         }
-
-        @inlinable
         internal func writerFinish(error: Error?) {
             // We must not resume the continuation while holding the lock
             // because it can deadlock in combination with the underlying ulock
@@ -682,8 +591,6 @@ extension NIOAsyncWriter {
                 break
             }
         }
-
-        @inlinable
         internal func sinkFinish(error: Error?) {
             // We must not resume the continuation while holding the lock
             // because it can deadlock in combination with the underlying ulock
@@ -702,8 +609,6 @@ extension NIOAsyncWriter {
                 break
             }
         }
-
-        @inlinable
         internal func unbufferQueuedEvents() {
             while let action = self._state.withLockedValue({ $0.stateMachine.unbufferQueuedEvents() }) {
                 switch action {
@@ -723,29 +628,21 @@ extension NIOAsyncWriter {
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension NIOAsyncWriter {
-    @usableFromInline
     internal struct StateMachine: Sendable {
-        @usableFromInline
         typealias YieldID = Storage.YieldIDGenerator.YieldID
         /// This is a small helper struct to encapsulate the two different values for a suspended yield.
-        @usableFromInline
         internal struct SuspendedYield: Sendable {
             /// The yield's ID.
-            @usableFromInline
             var yieldID: YieldID
             /// The yield's produced sequence of elements.
             /// The yield's continuation.
-            @usableFromInline
             var continuation: CheckedContinuation<YieldResult, Error>
-
-            @inlinable
             init(yieldID: YieldID, continuation: CheckedContinuation<YieldResult, Error>) {
                 self.yieldID = yieldID
                 self.continuation = continuation
             }
         }
         /// The internal result of a yield.
-        @usableFromInline
         internal enum YieldResult {
             /// Indicates that the elements got yielded to the sink.
             case yielded
@@ -754,7 +651,6 @@ extension NIOAsyncWriter {
         }
 
         /// The current state of our ``NIOAsyncWriter``.
-        @usableFromInline
         internal enum State: Sendable, CustomStringConvertible {
             /// The initial state before either a call to ``NIOAsyncWriter/yield(contentsOf:)`` or
             /// ``NIOAsyncWriter/finish(completion:)`` happened.
@@ -792,8 +688,6 @@ extension NIOAsyncWriter {
 
             /// Internal state to avoid CoW.
             case modifying
-
-            @usableFromInline
             var description: String {
                 switch self {
                 case .initial(let isWritable, _):
@@ -821,10 +715,7 @@ extension NIOAsyncWriter {
         }
 
         /// The state machine's current state.
-        @usableFromInline
         internal var _state: State
-
-        @inlinable
         internal var isWriterFinished: Bool {
             switch self._state {
             case .initial, .streaming:
@@ -835,8 +726,6 @@ extension NIOAsyncWriter {
                 preconditionFailure("Invalid state")
             }
         }
-
-        @inlinable
         internal var isSinkFinished: Bool {
             switch self._state {
             case .initial, .streaming, .writerFinished:
@@ -847,8 +736,6 @@ extension NIOAsyncWriter {
                 preconditionFailure("Invalid state")
             }
         }
-
-        @inlinable
         init(
             isWritable: Bool,
             delegate: Delegate
@@ -857,13 +744,10 @@ extension NIOAsyncWriter {
         }
 
         /// Actions returned by `setWritability()`.
-        @usableFromInline
         enum SetWritabilityAction {
             /// Indicates that all writer continuations should be resumed.
             case resumeContinuations(_TinyArray<SuspendedYield>)
         }
-
-        @inlinable
         internal mutating func setWritability(to newWritability: Bool) -> SetWritabilityAction? {
             switch self._state {
             case .initial(_, let delegate):
@@ -982,7 +866,6 @@ extension NIOAsyncWriter {
         }
 
         /// Actions returned by `yield()`.
-        @usableFromInline
         enum YieldAction {
             /// Indicates that ``NIOAsyncWriterSinkDelegate/didYield(contentsOf:)`` should be called.
             case callDidYield(Delegate)
@@ -990,8 +873,6 @@ extension NIOAsyncWriter {
             case suspendTask
             /// Indicates the given error should be thrown.
             case throwError(Error)
-
-            @inlinable
             init(isWritable: Bool, delegate: Delegate) {
                 if isWritable {
                     self = .callDidYield(delegate)
@@ -1000,8 +881,6 @@ extension NIOAsyncWriter {
                 }
             }
         }
-
-        @inlinable
         internal mutating func yield(
             yieldID: YieldID
         ) -> YieldAction {
@@ -1141,7 +1020,6 @@ extension NIOAsyncWriter {
         }
 
         /// This method is called as a result of the above `yield` method if it decided that the task needs to get suspended.
-        @inlinable
         internal mutating func yield(
             continuation: CheckedContinuation<YieldResult, Error>,
             yieldID: YieldID
@@ -1213,15 +1091,12 @@ extension NIOAsyncWriter {
         }
 
         /// Actions returned by `cancel()`.
-        @usableFromInline
         enum CancelAction {
             /// Indicates that the continuation should be resumed with a `CancellationError`.
             case resumeContinuationWithCancellationError(CheckedContinuation<YieldResult, Error>)
             /// Indicates that nothing should be done.
             case none
         }
-
-        @inlinable
         internal mutating func cancel(
             yieldID: YieldID
         ) -> CancelAction {
@@ -1351,7 +1226,6 @@ extension NIOAsyncWriter {
         }
 
         /// Actions returned by `writerFinish()`.
-        @usableFromInline
         enum WriterFinishAction {
             /// Indicates that ``NIOAsyncWriterSinkDelegate/didTerminate(completion:)`` should be called.
             case callDidTerminate(Delegate)
@@ -1360,8 +1234,6 @@ extension NIOAsyncWriter {
             /// Indicates that nothing should be done.
             case none
         }
-
-        @inlinable
         internal mutating func writerFinish(error: Error?) -> WriterFinishAction {
             switch self._state {
             case .initial(_, let delegate):
@@ -1423,15 +1295,12 @@ extension NIOAsyncWriter {
         }
 
         /// Actions returned by `sinkFinish()`.
-        @usableFromInline
         enum SinkFinishAction {
             /// Indicates that all continuations should be resumed with the given error.
             case resumeContinuationsWithError(_TinyArray<SuspendedYield>, Error)
             /// Indicates that nothing should be done.
             case none
         }
-
-        @inlinable
         internal mutating func sinkFinish(error: Error?) -> SinkFinishAction {
             switch self._state {
             case .initial(_, _):
@@ -1468,13 +1337,10 @@ extension NIOAsyncWriter {
         }
 
         /// Actions returned by `sinkFinish()`.
-        @usableFromInline
         enum UnbufferQueuedEventsAction {
             case resumeContinuations(_TinyArray<SuspendedYield>)
             case callDidTerminate(Delegate, Error?)
         }
-
-        @inlinable
         internal mutating func unbufferQueuedEvents() -> UnbufferQueuedEventsAction? {
             switch self._state {
             case .initial:

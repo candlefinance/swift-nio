@@ -1434,8 +1434,6 @@ extension BufferedStream {
                 producerContinuations: [(Result<Void, Error>) -> Void]
             )
         }
-
-        @inlinable
         mutating func finish(_ failure: Error?) -> FinishAction? {
             switch self._state {
             case .initial(let initial):

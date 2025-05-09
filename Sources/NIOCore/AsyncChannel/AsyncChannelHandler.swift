@@ -19,9 +19,7 @@ import DequeModule
 /// to write the outbound portion of a NIO ``Channel`` from Swift Concurrency with back-pressure
 /// support.
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
-@usableFromInline
 internal final class NIOAsyncChannelHandler<InboundIn: Sendable, ProducerElement: Sendable, OutboundOut: Sendable> {
-    @usableFromInline
     enum _ProducingState {
         // Not .stopProducing
         case keepProducing
@@ -32,8 +30,6 @@ internal final class NIOAsyncChannelHandler<InboundIn: Sendable, ProducerElement
         // .stopProducing and read()
         case producingPausedWithOutstandingRead
     }
-
-    @usableFromInline
     typealias Source = NIOThrowingAsyncSequenceProducer<
         ProducerElement,
         Error,
@@ -42,27 +38,21 @@ internal final class NIOAsyncChannelHandler<InboundIn: Sendable, ProducerElement
     >.Source
 
     /// The source of the asynchronous sequence.
-    @usableFromInline
     var source: Source?
 
     /// The channel handler's context.
-    @usableFromInline
     var context: ChannelHandlerContext?
 
     /// An array of reads which will be yielded to the source with the next channel read complete.
-    @usableFromInline
     var buffer: [ProducerElement] = []
 
     /// The current producing state.
-    @usableFromInline
     var producingState: _ProducingState = .keepProducing
 
     /// The event loop.
-    @usableFromInline
     let eventLoop: EventLoop
 
     /// A type indicating what kind of transformation to apply to reads.
-    @usableFromInline
     enum Transformation {
         /// A synchronous transformation is applied to incoming reads. This is used when sync wrapping a channel.
         case syncWrapping((InboundIn) -> ProducerElement)
@@ -72,20 +62,14 @@ internal final class NIOAsyncChannelHandler<InboundIn: Sendable, ProducerElement
     }
 
     /// The transformation applied to incoming reads.
-    @usableFromInline
     let transformation: Transformation
-
-    @usableFromInline
     typealias Writer = NIOAsyncWriter<
         OutboundOut,
         NIOAsyncChannelHandlerWriterDelegate<OutboundOut>
     >
-
-    @usableFromInline
     typealias Sink = Writer.Sink
 
     /// The sink of the ``NIOAsyncWriter``.
-    @usableFromInline
     var sink: Sink?
 
     /// The writer of the ``NIOAsyncWriter``.
@@ -97,13 +81,8 @@ internal final class NIOAsyncChannelHandler<InboundIn: Sendable, ProducerElement
     ///
     /// Effectively `channelActive` is used at the point in time at which NIO cedes ownership of
     /// the writer to the caller.
-    @usableFromInline
     var writer: Writer?
-
-    @usableFromInline
     let isOutboundHalfClosureEnabled: Bool
-
-    @inlinable
     init(
         eventLoop: EventLoop,
         transformation: Transformation,
@@ -117,37 +96,26 @@ internal final class NIOAsyncChannelHandler<InboundIn: Sendable, ProducerElement
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension NIOAsyncChannelHandler: ChannelInboundHandler {
-    @usableFromInline
     typealias InboundIn = InboundIn
-
-    @inlinable
     func handlerAdded(context: ChannelHandlerContext) {
         self.context = context
     }
-
-    @inlinable
     func handlerRemoved(context: ChannelHandlerContext) {
         self._finishSource(context: context)
         self.sink?.finish(error: ChannelError._ioOnClosedChannel)
         self.context = nil
         self.writer = nil
     }
-
-    @inlinable
     func channelActive(context: ChannelHandlerContext) {
         // Drop the writer ref, the caller is responsible for it now.
         self.writer = nil
         context.fireChannelActive()
     }
-
-    @inlinable
     func channelInactive(context: ChannelHandlerContext) {
         self._finishSource(context: context)
         self.sink?.finish(error: ChannelError._ioOnClosedChannel)
         context.fireChannelInactive()
     }
-
-    @inlinable
     func userInboundEventTriggered(context: ChannelHandlerContext, event: Any) {
         switch event {
         case ChannelEvent.inputClosed:
@@ -160,20 +128,14 @@ extension NIOAsyncChannelHandler: ChannelInboundHandler {
 
         context.fireUserInboundEventTriggered(event)
     }
-
-    @inlinable
     func channelWritabilityChanged(context: ChannelHandlerContext) {
         self.sink?.setWritability(to: context.channel.isWritable)
         context.fireChannelWritabilityChanged()
     }
-
-    @inlinable
     func errorCaught(context: ChannelHandlerContext, error: Error) {
         self._finishSource(with: error, context: context)
         context.fireErrorCaught(error)
     }
-
-    @inlinable
     func channelRead(context: ChannelHandlerContext, data: NIOAny) {
         let unwrapped = Self.unwrapInboundIn(data)
 
@@ -203,8 +165,6 @@ extension NIOAsyncChannelHandler: ChannelInboundHandler {
                 }
         }
     }
-
-    @inlinable
     func channelReadComplete(context: ChannelHandlerContext) {
         self._deliverReads(context: context)
         context.fireChannelReadComplete()
@@ -213,13 +173,8 @@ extension NIOAsyncChannelHandler: ChannelInboundHandler {
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension NIOAsyncChannelHandler: ChannelOutboundHandler {
-    @usableFromInline
     typealias OutboundIn = Any
-
-    @usableFromInline
     typealias OutboundOut = OutboundOut
-
-    @inlinable
     func read(context: ChannelHandlerContext) {
         switch self.producingState {
         case .keepProducing:
@@ -234,7 +189,6 @@ extension NIOAsyncChannelHandler: ChannelOutboundHandler {
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension NIOAsyncChannelHandler {
-    @inlinable
     func _transformationCompleted(
         context: ChannelHandlerContext,
         result: Result<ProducerElement, Error>
@@ -253,8 +207,6 @@ extension NIOAsyncChannelHandler {
             break
         }
     }
-
-    @inlinable
     func _finishSource(with error: Error? = nil, context: ChannelHandlerContext) {
         guard let source = self.source else {
             return
@@ -272,8 +224,6 @@ extension NIOAsyncChannelHandler {
         // We can nil the source here, as we're no longer going to use it.
         self.source = nil
     }
-
-    @inlinable
     func _deliverReads(context: ChannelHandlerContext) {
         if self.buffer.isEmpty {
             return
@@ -299,7 +249,6 @@ extension NIOAsyncChannelHandler {
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension NIOAsyncChannelHandler {
-    @inlinable
     func _didTerminate() {
         self.eventLoop.preconditionInEventLoop()
         self.source = nil
@@ -307,8 +256,6 @@ extension NIOAsyncChannelHandler {
         // Wedges the read open forever, we'll never read again.
         self.producingState = .producingPausedWithOutstandingRead
     }
-
-    @inlinable
     func _produceMore() {
         self.eventLoop.preconditionInEventLoop()
 
@@ -327,18 +274,10 @@ extension NIOAsyncChannelHandler {
 }
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
-@usableFromInline
 struct NIOAsyncChannelHandlerProducerDelegate: @unchecked Sendable, NIOAsyncSequenceProducerDelegate {
-    @usableFromInline
     let eventLoop: EventLoop
-
-    @usableFromInline
     let _didTerminate: () -> Void
-
-    @usableFromInline
     let _produceMore: () -> Void
-
-    @inlinable
     init<InboundIn, ProducerElement, OutboundOut>(
         handler: NIOAsyncChannelHandler<InboundIn, ProducerElement, OutboundOut>
     ) {
@@ -346,8 +285,6 @@ struct NIOAsyncChannelHandlerProducerDelegate: @unchecked Sendable, NIOAsyncSequ
         self._didTerminate = handler._didTerminate
         self._produceMore = handler._produceMore
     }
-
-    @inlinable
     func didTerminate() {
         if self.eventLoop.inEventLoop {
             self._didTerminate()
@@ -357,8 +294,6 @@ struct NIOAsyncChannelHandlerProducerDelegate: @unchecked Sendable, NIOAsyncSequ
             }
         }
     }
-
-    @inlinable
     func produceMore() {
         if self.eventLoop.inEventLoop {
             self._produceMore()
@@ -371,29 +306,17 @@ struct NIOAsyncChannelHandlerProducerDelegate: @unchecked Sendable, NIOAsyncSequ
 }
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
-@usableFromInline
 struct NIOAsyncChannelHandlerWriterDelegate<Element: Sendable>: NIOAsyncWriterSinkDelegate, @unchecked Sendable {
-    @usableFromInline
     let eventLoop: EventLoop
-
-    @usableFromInline
     let _didYieldContentsOf: (Deque<Element>) -> Void
-
-    @usableFromInline
     let _didYield: (Element) -> Void
-
-    @usableFromInline
     let _didTerminate: ((any Error)?) -> Void
-
-    @inlinable
     init<InboundIn, ProducerElement>(handler: NIOAsyncChannelHandler<InboundIn, ProducerElement, Element>) {
         self.eventLoop = handler.eventLoop
         self._didYieldContentsOf = handler._didYield(sequence:)
         self._didYield = handler._didYield(element:)
         self._didTerminate = handler._didTerminate(error:)
     }
-
-    @inlinable
     func didYield(contentsOf sequence: Deque<Element>) {
         if self.eventLoop.inEventLoop {
             self._didYieldContentsOf(sequence)
@@ -403,8 +326,6 @@ struct NIOAsyncChannelHandlerWriterDelegate<Element: Sendable>: NIOAsyncWriterSi
             }
         }
     }
-
-    @inlinable
     func didYield(_ element: Element) {
         if self.eventLoop.inEventLoop {
             self._didYield(element)
@@ -414,8 +335,6 @@ struct NIOAsyncChannelHandlerWriterDelegate<Element: Sendable>: NIOAsyncWriterSi
             }
         }
     }
-
-    @inlinable
     func didTerminate(error: (any Error)?) {
         if self.eventLoop.inEventLoop {
             self._didTerminate(error)
@@ -429,7 +348,6 @@ struct NIOAsyncChannelHandlerWriterDelegate<Element: Sendable>: NIOAsyncWriterSi
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 extension NIOAsyncChannelHandler {
-    @inlinable
     func _didYield(sequence: Deque<OutboundOut>) {
         // This is always called from an async context, so we must loop-hop.
         // Because we always loop-hop, we're always at the top of a stack frame. As this
@@ -445,8 +363,6 @@ extension NIOAsyncChannelHandler {
 
         self._doOutboundWrites(context: context, writes: sequence)
     }
-
-    @inlinable
     func _didYield(element: OutboundOut) {
         // This is always called from an async context, so we must loop-hop.
         // Because we always loop-hop, we're always at the top of a stack frame. As this
@@ -462,8 +378,6 @@ extension NIOAsyncChannelHandler {
 
         self._doOutboundWrite(context: context, write: element)
     }
-
-    @inlinable
     func _didTerminate(error: Error?) {
         self.eventLoop.preconditionInEventLoop()
 
@@ -473,8 +387,6 @@ extension NIOAsyncChannelHandler {
 
         self.sink = nil
     }
-
-    @inlinable
     func _doOutboundWrites(context: ChannelHandlerContext, writes: Deque<OutboundOut>) {
         for write in writes {
             context.write(Self.wrapOutboundOut(write), promise: nil)
@@ -482,8 +394,6 @@ extension NIOAsyncChannelHandler {
 
         context.flush()
     }
-
-    @inlinable
     func _doOutboundWrite(context: ChannelHandlerContext, write: OutboundOut) {
         context.write(Self.wrapOutboundOut(write), promise: nil)
         context.flush()

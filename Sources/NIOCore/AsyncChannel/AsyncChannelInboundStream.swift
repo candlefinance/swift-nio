@@ -17,7 +17,6 @@
 /// This is a unicast async sequence that allows a single iterator to be created.
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 public struct NIOAsyncChannelInboundStream<Inbound: Sendable>: Sendable {
-    @usableFromInline
     typealias Producer = NIOThrowingAsyncSequenceProducer<
         Inbound,
         Error,
@@ -27,10 +26,7 @@ public struct NIOAsyncChannelInboundStream<Inbound: Sendable>: Sendable {
 
     /// A source used for driving a ``NIOAsyncChannelInboundStream`` during tests.
     public struct TestSource {
-        @usableFromInline
         internal let continuation: AsyncThrowingStream<Inbound, Error>.Continuation
-
-        @inlinable
         init(continuation: AsyncThrowingStream<Inbound, Error>.Continuation) {
             self.continuation = continuation
         }
@@ -38,7 +34,6 @@ public struct NIOAsyncChannelInboundStream<Inbound: Sendable>: Sendable {
         /// Yields the element to the inbound stream.
         ///
         /// - Parameter element: The element to yield to the inbound stream.
-        @inlinable
         public func yield(_ element: Inbound) {
             self.continuation.yield(element)
         }
@@ -46,20 +41,16 @@ public struct NIOAsyncChannelInboundStream<Inbound: Sendable>: Sendable {
         /// Finished the inbound stream.
         ///
         /// - Parameter error: The error to throw, or nil, to finish normally.
-        @inlinable
         public func finish(throwing error: Error? = nil) {
             self.continuation.finish(throwing: error)
         }
     }
-
-    @usableFromInline
     enum _Backing: Sendable {
         case asyncStream(AsyncThrowingStream<Inbound, Error>)
         case producer(Producer)
     }
 
     /// The underlying async sequence.
-    @usableFromInline
     let _backing: _Backing
 
     /// Creates a new stream with a source for testing.
@@ -67,7 +58,6 @@ public struct NIOAsyncChannelInboundStream<Inbound: Sendable>: Sendable {
     /// This is useful for writing unit tests where you want to drive a ``NIOAsyncChannelInboundStream``.
     ///
     /// - Returns: A tuple containing the input stream and a test source to drive it.
-    @inlinable
     public static func makeTestingStream() -> (Self, TestSource) {
         var continuation: AsyncThrowingStream<Inbound, Error>.Continuation!
         let stream = AsyncThrowingStream<Inbound, Error> { continuation = $0 }
@@ -75,13 +65,9 @@ public struct NIOAsyncChannelInboundStream<Inbound: Sendable>: Sendable {
         let inputStream = Self(stream: stream)
         return (inputStream, source)
     }
-
-    @inlinable
     init(stream: AsyncThrowingStream<Inbound, Error>) {
         self._backing = .asyncStream(stream)
     }
-
-    @inlinable
     init<ProducerElement: Sendable, Outbound: Sendable>(
         eventLoop: any EventLoop,
         handler: NIOAsyncChannelHandler<ProducerElement, Inbound, Outbound>,
@@ -115,15 +101,12 @@ extension NIOAsyncChannelInboundStream: AsyncSequence {
     public typealias Element = Inbound
 
     public struct AsyncIterator: AsyncIteratorProtocol {
-        @usableFromInline
         enum _Backing {
             case asyncStream(AsyncThrowingStream<Inbound, Error>.Iterator)
             case producer(Producer.AsyncIterator)
         }
 
-        @usableFromInline var _backing: _Backing
-
-        @inlinable
+        var _backing: _Backing
         init(_ backing: NIOAsyncChannelInboundStream<Inbound>._Backing) {
             switch backing {
             case .asyncStream(let asyncStream):
@@ -132,8 +115,6 @@ extension NIOAsyncChannelInboundStream: AsyncSequence {
                 self._backing = .producer(producer.makeAsyncIterator())
             }
         }
-
-        @inlinable
         public mutating func next() async throws -> Element? {
             switch self._backing {
             case .asyncStream(var iterator):
@@ -148,8 +129,6 @@ extension NIOAsyncChannelInboundStream: AsyncSequence {
             }
         }
     }
-
-    @inlinable
     public func makeAsyncIterator() -> AsyncIterator {
         AsyncIterator(self._backing)
     }

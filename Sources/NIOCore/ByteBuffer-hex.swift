@@ -395,7 +395,6 @@ extension UInt8 {
 }
 
 extension Substring.UTF8View {
-    @usableFromInline
     mutating func popNextHexByte() throws -> UInt8? {
         while let nextByte = self.first, nextByte.isASCIIWhitespace {
             self = self.dropFirst()

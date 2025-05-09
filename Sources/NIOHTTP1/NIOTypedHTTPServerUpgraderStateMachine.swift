@@ -17,7 +17,6 @@ import NIOCore
 
 @available(macOS 13, iOS 16, tvOS 16, watchOS 9, *)
 struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
-    @usableFromInline
     enum State {
         /// The state before we received a TLSUserEvent. We are just forwarding any read at this point.
         case initial
@@ -26,8 +25,6 @@ struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
             case data(NIOAny)
             case inputClosed
         }
-
-        @usableFromInline
         struct AwaitingUpgrader {
             var seenFirstRequest: Bool
             var buffer: Deque<BufferedState>
@@ -35,8 +32,6 @@ struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
 
         /// The request head has been received. We're currently running the future chain awaiting an upgrader.
         case awaitingUpgrader(AwaitingUpgrader)
-
-        @usableFromInline
         struct UpgraderReady {
             var upgrader: any NIOTypedHTTPServerProtocolUpgrader<UpgradeResult>
             var requestHead: HTTPRequestHead
@@ -47,15 +42,11 @@ struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
 
         /// We have an upgrader, which means we can begin upgrade we are just waiting for the request end.
         case upgraderReady(UpgraderReady)
-
-        @usableFromInline
         struct Upgrading {
             var buffer: Deque<BufferedState>
         }
         /// We are either running the upgrading handler.
         case upgrading(Upgrading)
-
-        @usableFromInline
         struct Unbuffering {
             var buffer: Deque<BufferedState>
         }
@@ -67,13 +58,9 @@ struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
     }
 
     private var state = State.initial
-
-    @usableFromInline
     enum HandlerRemovedAction {
         case failUpgradePromise
     }
-
-    @inlinable
     mutating func handlerRemoved() -> HandlerRemovedAction? {
         switch self.state {
         case .initial, .awaitingUpgrader, .upgraderReady, .upgrading, .unbuffering:
@@ -87,14 +74,10 @@ struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
             fatalError("Internal inconsistency in HTTPServerUpgradeStateMachine")
         }
     }
-
-    @usableFromInline
     enum ChannelReadDataAction {
         case unwrapData
         case fireChannelRead
     }
-
-    @inlinable
     mutating func channelReadData(_ data: NIOAny) -> ChannelReadDataAction? {
         switch self.state {
         case .initial:
@@ -138,8 +121,6 @@ struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
             fatalError("Internal inconsistency in HTTPServerUpgradeStateMachine")
         }
     }
-
-    @usableFromInline
     enum ChannelReadRequestPartAction {
         case failUpgradePromise(Error)
         case runNotUpgradingInitializer
@@ -156,8 +137,6 @@ struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
             connectionHeader: Set<String>
         )
     }
-
-    @inlinable
     mutating func channelReadRequestPart(_ requestPart: HTTPServerRequestPart) -> ChannelReadRequestPartAction? {
         switch self.state {
         case .initial:
@@ -244,16 +223,12 @@ struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
             fatalError("Internal inconsistency in HTTPServerUpgradeStateMachine")
         }
     }
-
-    @usableFromInline
     enum UpgradingHandlerCompletedAction {
         case fireErrorCaughtAndStartUnbuffering(Error)
         case removeHandler(UpgradeResult)
         case fireErrorCaughtAndRemoveHandler(Error)
         case startUnbuffering(UpgradeResult)
     }
-
-    @inlinable
     mutating func upgradingHandlerCompleted(_ result: Result<UpgradeResult, Error>) -> UpgradingHandlerCompletedAction?
     {
         switch self.state {
@@ -295,8 +270,6 @@ struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
             fatalError("Internal inconsistency in HTTPServerUpgradeStateMachine")
         }
     }
-
-    @usableFromInline
     enum FindingUpgraderCompletedAction {
         case startUpgrading(
             upgrader: any NIOTypedHTTPServerProtocolUpgrader<UpgradeResult>,
@@ -307,8 +280,6 @@ struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
         case fireErrorCaughtAndStartUnbuffering(Error)
         case fireErrorCaughtAndRemoveHandler(Error)
     }
-
-    @inlinable
     mutating func findingUpgraderCompleted(
         requestHead: HTTPRequestHead,
         _ result: Result<
@@ -368,16 +339,12 @@ struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
             fatalError("Internal inconsistency in HTTPServerUpgradeStateMachine")
         }
     }
-
-    @usableFromInline
     enum UnbufferAction {
         case close
         case fireChannelRead(NIOAny)
         case fireChannelReadCompleteAndRemoveHandler
         case fireInputClosedEvent
     }
-
-    @inlinable
     mutating func unbuffer() -> UnbufferAction {
         switch self.state {
         case .initial, .awaitingUpgrader, .upgraderReady, .upgrading, .finished:
@@ -405,15 +372,11 @@ struct NIOTypedHTTPServerUpgraderStateMachine<UpgradeResult> {
 
         }
     }
-
-    @usableFromInline
     enum InputClosedAction {
         case close
         case `continue`
         case fireInputClosedEvent
     }
-
-    @inlinable
     mutating func inputClosed() -> InputClosedAction {
         switch self.state {
         case .initial:
