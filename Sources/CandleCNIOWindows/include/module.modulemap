@@ -1,4 +1,4 @@
-module CNIOWindows {
+module CandleCNIOWindows {
   header "CNIOWindows.h"
   export *
 }
