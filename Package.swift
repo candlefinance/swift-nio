@@ -55,7 +55,7 @@ let includePrivacyManifest = false
 #endif
 
 let package = Package(
-    name: "swift-nio",
+    name: "candle-swift-nio",
     products: [
         .library(name: "CandleNIOCore", targets: ["CandleNIOCore"]),
         .library(name: "CandleNIO", targets: ["CandleNIO"]),
