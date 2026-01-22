@@ -19,9 +19,9 @@ import PackageDescription
 // into the product code.
 import class Foundation.ProcessInfo
 
-let swiftAtomics: PackageDescription.Target.Dependency = .product(name: "CandleAtomics", package: "candle-swift-atomics")
-let swiftCollections: PackageDescription.Target.Dependency = .product(name: "CandleDequeModule", package: "candle-swift-collections")
-let swiftSystem: PackageDescription.Target.Dependency = .product(name: "SystemPackage", package: "candle-swift-system")
+let swiftAtomics: PackageDescription.Target.Dependency = .product(name: "CandleAtomics", package: "swift-atomics")
+let swiftCollections: PackageDescription.Target.Dependency = .product(name: "CandleDequeModule", package: "swift-collections")
+let swiftSystem: PackageDescription.Target.Dependency = .product(name: "SystemPackage", package: "swift-system")
 
 // These platforms require a dependency on `NIOPosix` from `NIOHTTP1` to maintain backward
 // compatibility with previous NIO versions.
@@ -55,7 +55,7 @@ let includePrivacyManifest = false
 #endif
 
 let package = Package(
-    name: "candle-swift-nio",
+    name: "swift-nio",
     products: [
         .library(name: "CandleNIOCore", targets: ["CandleNIOCore"]),
         .library(name: "CandleNIO", targets: ["CandleNIO"]),
