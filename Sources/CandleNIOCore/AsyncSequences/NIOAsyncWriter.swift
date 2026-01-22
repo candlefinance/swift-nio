@@ -15,7 +15,7 @@
 import CandleAtomics
 import CandleDequeModule
 import CandleNIOConcurrencyHelpers
-import _Candle_NIODataStructures
+import Candle_NIODataStructures
 let _asyncWriterYieldIDCounter = ManagedAtomic<UInt64>(0)
 
 /// The delegate of the ``NIOAsyncWriter``. It is the consumer of the yielded writes to the ``NIOAsyncWriter``.

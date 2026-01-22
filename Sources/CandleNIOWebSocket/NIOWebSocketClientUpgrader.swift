@@ -14,7 +14,7 @@
 
 import CandleNIOCore
 import CandleNIOHTTP1
-import _Candle_NIOBase64
+import Candle_NIOBase64
 
 @available(*, deprecated, renamed: "NIOWebSocketClientUpgrader")
 public typealias NIOWebClientSocketUpgrader = NIOWebSocketClientUpgrader

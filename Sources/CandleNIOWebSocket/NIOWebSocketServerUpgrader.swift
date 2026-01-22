@@ -15,7 +15,7 @@
 import CandleCNIOSHA1
 import CandleNIOCore
 import CandleNIOHTTP1
-import _Candle_NIOBase64
+import Candle_NIOBase64
 
 let magicWebSocketGUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
 

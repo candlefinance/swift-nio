@@ -74,23 +74,23 @@ let package = Package(
             name: "CandleNIOCore",
             dependencies: [
                 "CandleNIOConcurrencyHelpers",
-                "_Candle_NIOBase64",
+                "Candle_NIOBase64",
                 "CandleCNIODarwin",
                 "CandleCNIOLinux",
                 "CandleCNIOWindows",
                 "CandleCNIOWASI",
-                "_Candle_NIODataStructures",
+                "Candle_NIODataStructures",
                 swiftCollections,
                 swiftAtomics,
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .target(
-            name: "_Candle_NIODataStructures",
+            name: "Candle_NIODataStructures",
             swiftSettings: strictConcurrencySettings
         ),
         .target(
-            name: "_Candle_NIOBase64",
+            name: "Candle_NIOBase64",
             swiftSettings: strictConcurrencySettings
         ),
         .target(
@@ -98,7 +98,7 @@ let package = Package(
             dependencies: [
                 "CandleNIOCore",
                 "CandleNIOConcurrencyHelpers",
-                "_Candle_NIODataStructures",
+                "Candle_NIODataStructures",
                 swiftAtomics,
                 swiftCollections,
             ],
@@ -112,7 +112,7 @@ let package = Package(
                 "CandleCNIOWindows",
                 "CandleNIOConcurrencyHelpers",
                 "CandleNIOCore",
-                "_Candle_NIODataStructures",
+                "Candle_NIODataStructures",
                 swiftAtomics,
             ],
             exclude: includePrivacyManifest ? [] : ["PrivacyInfo.xcprivacy"],
@@ -194,7 +194,7 @@ let package = Package(
                 "CandleNIOCore",
                 "CandleNIOHTTP1",
                 "CandleCNIOSHA1",
-                "_Candle_NIOBase64",
+                "Candle_NIOBase64",
             ],
             swiftSettings: strictConcurrencySettings
         ),

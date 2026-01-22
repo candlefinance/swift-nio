@@ -17,7 +17,7 @@ import CandleDequeModule
 import Dispatch
 import CandleNIOConcurrencyHelpers
 import CandleNIOCore
-import _Candle_NIODataStructures
+import Candle_NIODataStructures
 
 private func printError(_ string: StaticString) {
     string.withUTF8Buffer { buf in
