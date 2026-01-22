@@ -12,9 +12,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Atomics
-import DequeModule
-import NIOCore
+import CandleAtomics
+import CandleDequeModule
+import CandleNIOCore
 
 private struct NoOpDelegate: NIOAsyncWriterSinkDelegate, @unchecked Sendable {
     typealias Element = Int

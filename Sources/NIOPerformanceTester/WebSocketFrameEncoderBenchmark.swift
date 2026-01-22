@@ -11,9 +11,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 //===----------------------------------------------------------------------===//
-import NIOCore
-import NIOEmbedded
-import NIOWebSocket
+import CandleNIOCore
+import CandleNIOEmbedded
+import CandleNIOWebSocket
 
 final class WebSocketFrameEncoderBenchmark {
     private let channel: EmbeddedChannel

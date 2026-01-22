@@ -12,7 +12,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
+import CandleNIOCore
 
 /// A writer which buffers bytes in memory before writing them to the file system.
 ///

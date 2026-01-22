@@ -12,9 +12,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
-import NIOHTTP1
-import NIOPosix
+import CandleNIOCore
+import CandleNIOHTTP1
+import CandleNIOPosix
 
 extension String {
     func chopPrefix(_ prefix: String) -> String? {

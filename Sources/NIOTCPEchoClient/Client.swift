@@ -12,8 +12,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
-import NIOPosix
+import CandleNIOCore
+import CandleNIOPosix
 
 @available(macOS 14, iOS 17, tvOS 17, watchOS 10, *)
 @main

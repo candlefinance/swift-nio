@@ -11,8 +11,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 //===----------------------------------------------------------------------===//
-import NIOCore
-import NIOEmbedded
+import CandleNIOCore
+import CandleNIOEmbedded
 
 final class ByteToMessageDecoderDecodeManySmallsBenchmark: Benchmark {
     private let iterations: Int

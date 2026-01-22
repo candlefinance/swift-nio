@@ -16,8 +16,8 @@ let package = Package(
             name: "NIOPosixBenchmarks",
             dependencies: [
                 .product(name: "Benchmark", package: "package-benchmark"),
-                .product(name: "NIOCore", package: "swift-nio"),
-                .product(name: "NIOPosix", package: "swift-nio"),
+                .product(name: "CandleNIOCore", package: "swift-nio"),
+                .product(name: "CandleNIOPosix", package: "swift-nio"),
             ],
             path: "Benchmarks/NIOPosixBenchmarks",
             plugins: [
@@ -28,8 +28,8 @@ let package = Package(
             name: "NIOCoreBenchmarks",
             dependencies: [
                 .product(name: "Benchmark", package: "package-benchmark"),
-                .product(name: "NIOCore", package: "swift-nio"),
-                .product(name: "NIOEmbedded", package: "swift-nio"),
+                .product(name: "CandleNIOCore", package: "swift-nio"),
+                .product(name: "CandleNIOEmbedded", package: "swift-nio"),
             ],
             path: "Benchmarks/NIOCoreBenchmarks",
             plugins: [

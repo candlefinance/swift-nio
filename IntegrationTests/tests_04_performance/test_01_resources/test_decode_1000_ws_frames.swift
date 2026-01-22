@@ -14,7 +14,7 @@
 
 import NIOCore
 import NIOEmbedded
-import NIOWebSocket
+import CandleNIOWebSocket
 
 class UnboxingChannelHandler: ChannelInboundHandler {
     typealias InboundIn = WebSocketFrame

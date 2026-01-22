@@ -13,9 +13,9 @@
 //===----------------------------------------------------------------------===//
 
 import Dispatch
-import NIOConcurrencyHelpers
-import NIOCore
-import NIOPosix
+import CandleNIOConcurrencyHelpers
+import CandleNIOCore
+import CandleNIOPosix
 
 final class NIOLockBenchmark: Benchmark, @unchecked Sendable {
     // mutable state is protected by the lock

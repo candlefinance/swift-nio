@@ -12,7 +12,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
+import CandleNIOCore
 
 final class ByteBufferReadWriteMultipleIntegersBenchmark<I: FixedWidthInteger>: Benchmark {
     private let iterations: Int

@@ -12,7 +12,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
+import CandleNIOCore
 import SystemPackage
 
 /// A handle for a file system object.

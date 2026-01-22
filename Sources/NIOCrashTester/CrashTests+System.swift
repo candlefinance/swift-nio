@@ -13,8 +13,8 @@
 //===----------------------------------------------------------------------===//
 
 #if !canImport(Darwin) || os(macOS)
-import NIOCore
-import NIOPosix
+import CandleNIOCore
+import CandleNIOPosix
 import Foundation
 
 private let group = MultiThreadedEventLoopGroup(numberOfThreads: 1)

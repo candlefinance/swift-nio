@@ -14,8 +14,8 @@
 
 #if !canImport(Darwin) || os(macOS)
 import Dispatch
-import NIOCore
-import NIOPosix
+import CandleNIOCore
+import CandleNIOPosix
 
 private let group = MultiThreadedEventLoopGroup(numberOfThreads: 2)
 

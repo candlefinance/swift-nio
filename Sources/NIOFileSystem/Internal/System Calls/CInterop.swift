@@ -16,16 +16,16 @@ import SystemPackage
 
 #if canImport(Darwin)
 import Darwin
-import CNIODarwin
+import CandleCNIODarwin
 #elseif canImport(Glibc)
 @preconcurrency import Glibc
-import CNIOLinux
+import CandleCNIOLinux
 #elseif canImport(Musl)
 @preconcurrency import Musl
-import CNIOLinux
+import CandleCNIOLinux
 #elseif canImport(Android)
 @preconcurrency import Android
-import CNIOLinux
+import CandleCNIOLinux
 #endif
 
 /// Aliases for platform-dependent types used for system calls.
@@ -71,11 +71,11 @@ extension CInterop {
     #endif
 
     #if canImport(Darwin)
-    typealias FTS = CNIODarwin.FTS
-    typealias FTSEnt = CNIODarwin.FTSENT
+    typealias FTS = CandleCNIODarwin.FTS
+    typealias FTSEnt = CandleCNIODarwin.FTSENT
     #elseif canImport(Glibc) || canImport(Musl) || canImport(Android)
-    typealias FTS = CNIOLinux.FTS
-    typealias FTSEnt = CNIOLinux.FTSENT
+    typealias FTS = CandleCNIOLinux.FTS
+    typealias FTSEnt = CandleCNIOLinux.FTSENT
     #endif
 
     typealias FTSPointer = UnsafeMutablePointer<FTS>

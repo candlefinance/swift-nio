@@ -13,8 +13,8 @@
 //===----------------------------------------------------------------------===//
 
 import Foundation
-import NIOCore
-import NIOPosix
+import CandleNIOCore
+import CandleNIOPosix
 
 final class RunIfActiveBenchmark: Benchmark {
     private var threadPool: NIOThreadPool!

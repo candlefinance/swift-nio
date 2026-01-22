@@ -24,12 +24,12 @@
 #endif
 
 import Dispatch
-import NIOCore
-import NIOEmbedded
-import NIOFoundationCompat
-import NIOHTTP1
-import NIOPosix
-import NIOWebSocket
+import CandleNIOCore
+import CandleNIOEmbedded
+import CandleNIOFoundationCompat
+import CandleNIOHTTP1
+import CandleNIOPosix
+import CandleNIOWebSocket
 
 // Use unbuffered stdout to help detect exactly which test was running in the event of a crash.
 setbuf(stdout, nil)

@@ -13,8 +13,8 @@
 //===----------------------------------------------------------------------===//
 
 #if !canImport(Darwin) || os(macOS)
-import NIOCore
-import NIOPosix
+import CandleNIOCore
+import CandleNIOPosix
 import class Foundation.Process
 import struct Foundation.URL
 import class Foundation.FileHandle

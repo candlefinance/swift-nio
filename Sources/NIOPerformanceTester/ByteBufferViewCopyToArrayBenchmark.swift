@@ -12,7 +12,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
+import CandleNIOCore
 
 final class ByteBufferViewCopyToArrayBenchmark: Benchmark {
     private let iterations: Int

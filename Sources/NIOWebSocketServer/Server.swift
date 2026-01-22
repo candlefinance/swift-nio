@@ -13,10 +13,10 @@
 //===----------------------------------------------------------------------===//
 
 #if (!canImport(Darwin) && compiler(>=5.9)) || (canImport(Darwin) && compiler(>=5.10))
-import NIOCore
-import NIOPosix
-import NIOHTTP1
-import NIOWebSocket
+import CandleNIOCore
+import CandleNIOPosix
+import CandleNIOHTTP1
+import CandleNIOWebSocket
 
 let websocketResponse = """
     <!DOCTYPE html>

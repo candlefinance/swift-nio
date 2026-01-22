@@ -12,7 +12,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOHTTP1
+import CandleNIOHTTP1
 
 func run(identifier: String) {
     measure(identifier: identifier) {

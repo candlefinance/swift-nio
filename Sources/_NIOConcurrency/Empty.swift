@@ -16,4 +16,4 @@
 //       only exists to not break adopters code for now. Please remove all your dependencies on
 //       `_NIOConcurrency`. We want to remove this module soon.
 
-import NIOCore
+import CandleNIOCore

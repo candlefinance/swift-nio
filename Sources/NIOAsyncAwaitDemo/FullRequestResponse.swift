@@ -14,8 +14,8 @@
 
 // THIS FILE IS MOSTLY COPIED FROM swift-nio-extras
 
-import NIOCore
-import NIOHTTP1
+import CandleNIOCore
+import CandleNIOHTTP1
 
 public final class MakeFullRequestHandler: ChannelOutboundHandler, Sendable {
     public typealias OutboundOut = HTTPClientRequestPart

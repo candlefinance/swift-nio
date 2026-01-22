@@ -13,8 +13,8 @@
 //===----------------------------------------------------------------------===//
 
 import Dispatch
-import NIOCore
-import NIOPosix
+import CandleNIOCore
+import CandleNIOPosix
 
 private let newLine = "\n".utf8.first!
 

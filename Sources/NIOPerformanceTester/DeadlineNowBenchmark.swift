@@ -12,7 +12,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
+import CandleNIOCore
 
 final class DeadlineNowBenchmark: Benchmark {
     private let iterations: Int

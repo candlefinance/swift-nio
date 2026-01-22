@@ -12,8 +12,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
-import NIOPosix
+import CandleNIOCore
+import CandleNIOPosix
 
 /// Test measure a TCP channel throughput.
 /// Server send 100K messages to the client,

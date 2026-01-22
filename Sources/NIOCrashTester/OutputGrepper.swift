@@ -11,9 +11,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 //===----------------------------------------------------------------------===//
-import NIOCore
-import NIOFoundationCompat
-import NIOPosix
+import CandleNIOCore
+import CandleNIOFoundationCompat
+import CandleNIOPosix
 
 import class Foundation.Pipe
 

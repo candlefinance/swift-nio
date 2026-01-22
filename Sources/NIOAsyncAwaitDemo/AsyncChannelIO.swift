@@ -12,8 +12,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
-import NIOHTTP1
+import CandleNIOCore
+import CandleNIOHTTP1
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)
 struct AsyncChannelIO<Request: Sendable, Response: Sendable> {

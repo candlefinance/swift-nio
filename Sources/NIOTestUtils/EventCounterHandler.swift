@@ -12,9 +12,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Atomics
-import NIOConcurrencyHelpers
-import NIOCore
+import CandleAtomics
+import CandleNIOConcurrencyHelpers
+import CandleNIOCore
 
 /// `EventCounterHandler` is a `ChannelHandler` that counts and forwards all the events that it sees coming through
 /// the `ChannelPipeline`.

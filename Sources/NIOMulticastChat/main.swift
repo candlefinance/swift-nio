@@ -11,9 +11,9 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 //===----------------------------------------------------------------------===//
-import CNIOLinux
-import NIOCore
-import NIOPosix
+import CandleCNIOLinux
+import CandleNIOCore
+import CandleNIOPosix
 
 /// Implements a simple chat protocol.
 private final class ChatMessageDecoder: ChannelInboundHandler {

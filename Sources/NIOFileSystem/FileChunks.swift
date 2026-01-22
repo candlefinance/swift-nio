@@ -12,9 +12,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOConcurrencyHelpers
-import NIOCore
-import NIOPosix
+import CandleNIOConcurrencyHelpers
+import CandleNIOCore
+import CandleNIOPosix
 import SystemPackage
 
 /// An `AsyncSequence` of ordered chunks read from a file.

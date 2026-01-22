@@ -12,8 +12,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-import DequeModule
-import NIOCore
+import CandleDequeModule
+import CandleNIOCore
 
 /// A reader which maintains a buffer of bytes read from the file.
 ///

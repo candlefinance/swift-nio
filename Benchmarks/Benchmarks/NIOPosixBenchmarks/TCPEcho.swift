@@ -12,8 +12,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
-import NIOPosix
+import CandleNIOCore
+import CandleNIOPosix
 
 private final class EchoChannelHandler: ChannelInboundHandler {
     fileprivate typealias InboundIn = ByteBuffer

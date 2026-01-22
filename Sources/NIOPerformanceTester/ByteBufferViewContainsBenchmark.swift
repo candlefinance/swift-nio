@@ -13,7 +13,7 @@
 //===----------------------------------------------------------------------===//
 
 import Foundation
-import NIOCore
+import CandleNIOCore
 
 final class ByteBufferViewContainsBenchmark: Benchmark {
     private let iterations: Int

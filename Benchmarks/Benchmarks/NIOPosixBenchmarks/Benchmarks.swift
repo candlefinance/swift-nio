@@ -13,8 +13,8 @@
 //===----------------------------------------------------------------------===//
 
 import Benchmark
-import NIOCore
-import NIOPosix
+import CandleNIOCore
+import CandleNIOPosix
 
 private let eventLoop = MultiThreadedEventLoopGroup.singleton.next()
 

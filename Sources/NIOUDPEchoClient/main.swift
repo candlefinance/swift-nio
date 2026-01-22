@@ -11,8 +11,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 //===----------------------------------------------------------------------===//
-import NIOCore
-import NIOPosix
+import CandleNIOCore
+import CandleNIOPosix
 
 print("Please enter line to send to the server")
 let line = readLine(strippingNewline: true)!

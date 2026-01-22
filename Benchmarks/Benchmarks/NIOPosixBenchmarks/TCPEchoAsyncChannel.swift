@@ -12,8 +12,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
-import NIOPosix
+import CandleNIOCore
+import CandleNIOPosix
 
 func runTCPEchoAsyncChannel(numberOfWrites: Int, eventLoop: EventLoop) async throws {
     let serverChannel = try await ServerBootstrap(group: eventLoop)

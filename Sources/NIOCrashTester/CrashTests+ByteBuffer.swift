@@ -12,7 +12,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
+import CandleNIOCore
 
 struct ByteBufferCrashTests {
     #if !canImport(Darwin) || os(macOS)

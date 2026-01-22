@@ -16,16 +16,16 @@ import SystemPackage
 
 #if canImport(Darwin)
 import Darwin
-import CNIODarwin
+import CandleCNIODarwin
 #elseif canImport(Glibc)
 @preconcurrency import Glibc
-import CNIOLinux
+import CandleCNIOLinux
 #elseif canImport(Musl)
 @preconcurrency import Musl
-import CNIOLinux
+import CandleCNIOLinux
 #elseif canImport(Bionic)
 @preconcurrency import Bionic
-import CNIOLinux
+import CandleCNIOLinux
 #endif
 
 @_spi(Testing)

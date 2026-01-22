@@ -14,8 +14,8 @@
 
 #if os(macOS) || os(iOS) || os(tvOS) || os(watchOS) || os(Linux) || os(Android)
 import _NIOFileSystem
-import NIOCore
-import NIOFoundationCompat
+import CandleNIOCore
+import CandleNIOFoundationCompat
 import struct Foundation.Data
 
 @available(macOS 10.15, iOS 13.0, watchOS 6.0, tvOS 13.0, *)

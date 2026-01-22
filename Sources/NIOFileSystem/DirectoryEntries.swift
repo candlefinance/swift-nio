@@ -12,11 +12,11 @@
 //
 //===----------------------------------------------------------------------===//
 
-import CNIODarwin
-import CNIOLinux
-import NIOConcurrencyHelpers
-import NIOCore
-import NIOPosix
+import CandleCNIODarwin
+import CandleCNIOLinux
+import CandleNIOConcurrencyHelpers
+import CandleNIOCore
+import CandleNIOPosix
 import SystemPackage
 
 /// An `AsyncSequence` of entries in a directory.

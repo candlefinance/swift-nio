@@ -12,7 +12,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOCore
+import CandleNIOCore
 
 final class CircularBufferViewCopyToArrayBenchmark: Benchmark {
     private let iterations: Int

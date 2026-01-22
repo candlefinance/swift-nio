@@ -12,19 +12,19 @@
 //
 //===----------------------------------------------------------------------===//
 
-import NIOConcurrencyHelpers
-import NIOCore
-import NIOPosix
+import CandleNIOConcurrencyHelpers
+import CandleNIOCore
+import CandleNIOPosix
 import SystemPackage
 
 #if canImport(Darwin)
 import Darwin
 #elseif canImport(Glibc)
 @preconcurrency import Glibc
-import CNIOLinux
+import CandleCNIOLinux
 #elseif canImport(Musl)
 @preconcurrency import Musl
-import CNIOLinux
+import CandleCNIOLinux
 #elseif canImport(Bionic)
 @preconcurrency import Bionic
 #endif

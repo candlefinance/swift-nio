@@ -18,13 +18,13 @@ import SystemPackage
 import Darwin
 #elseif canImport(Glibc)
 @preconcurrency import Glibc
-import CNIOLinux
+import CandleCNIOLinux
 #elseif canImport(Musl)
 @preconcurrency import Musl
-import CNIOLinux
+import CandleCNIOLinux
 #elseif canImport(Android)
 @preconcurrency import Android
-import CNIOLinux
+import CandleCNIOLinux
 #endif
 
 /// Information about a file system object.

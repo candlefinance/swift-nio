@@ -12,9 +12,9 @@
 //
 //===----------------------------------------------------------------------===//
 #if !canImport(Darwin) || os(macOS)
-import NIOEmbedded
-import NIOCore
-import NIOHTTP1
+import CandleNIOEmbedded
+import CandleNIOCore
+import CandleNIOHTTP1
 
 struct HTTPCrashTests {
     let testEncodingChunkedAndContentLengthForRequestsCrashes = CrashTest(

@@ -14,7 +14,7 @@
 
 import NIOCore
 import NIOEmbedded
-import NIOWebSocket
+import CandleNIOWebSocket
 
 func doSendFramesHoldingBuffer(
     channel: EmbeddedChannel,

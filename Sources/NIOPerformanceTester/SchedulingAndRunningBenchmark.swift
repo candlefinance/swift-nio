@@ -13,8 +13,8 @@
 //===----------------------------------------------------------------------===//
 
 import Foundation
-import NIOCore
-import NIOPosix
+import CandleNIOCore
+import CandleNIOPosix
 
 final class SchedulingAndRunningBenchmark: Benchmark {
     private var group: MultiThreadedEventLoopGroup!

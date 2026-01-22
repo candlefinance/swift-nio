@@ -12,7 +12,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-import DequeModule
+import CandleDequeModule
 import NIOCore
 
 @available(macOS 10.15, iOS 13, tvOS 13, watchOS 6, *)

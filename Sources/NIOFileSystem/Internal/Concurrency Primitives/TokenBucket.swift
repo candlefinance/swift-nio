@@ -23,8 +23,8 @@
 //
 //===----------------------------------------------------------------------===//
 
-import DequeModule
-import NIOConcurrencyHelpers
+import CandleDequeModule
+import CandleNIOConcurrencyHelpers
 
 /// Type modeled after a "token bucket" pattern, which is similar to a semaphore, but is built with
 /// Swift Concurrency primitives.

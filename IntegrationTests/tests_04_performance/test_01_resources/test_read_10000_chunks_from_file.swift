@@ -14,7 +14,7 @@
 
 import Dispatch
 import Foundation
-import NIOConcurrencyHelpers
+import CandleNIOConcurrencyHelpers
 import NIOCore
 import NIOPosix
 

@@ -12,9 +12,9 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Atomics
-import NIOCore
-import NIOPosix
+import CandleAtomics
+import CandleNIOCore
+import CandleNIOPosix
 import SystemPackage
 
 #if canImport(Darwin)

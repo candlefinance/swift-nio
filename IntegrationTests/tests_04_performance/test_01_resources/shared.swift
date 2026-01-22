@@ -14,7 +14,7 @@
 
 import Foundation
 import NIOCore
-import NIOHTTP1
+import CandleNIOHTTP1
 import NIOPosix
 
 let localhostPickPort = try! SocketAddress.makeAddressResolvingHost("127.0.0.1", port: 0)

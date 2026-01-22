@@ -19,8 +19,8 @@ import PackageDescription
 // into the product code.
 import class Foundation.ProcessInfo
 
-let swiftAtomics: PackageDescription.Target.Dependency = .product(name: "Atomics", package: "swift-atomics")
-let swiftCollections: PackageDescription.Target.Dependency = .product(name: "DequeModule", package: "swift-collections")
+let swiftAtomics: PackageDescription.Target.Dependency = .product(name: "CandleAtomics", package: "swift-atomics")
+let swiftCollections: PackageDescription.Target.Dependency = .product(name: "CandleDequeModule", package: "swift-collections")
 let swiftSystem: PackageDescription.Target.Dependency = .product(name: "SystemPackage", package: "swift-system")
 
 // These platforms require a dependency on `NIOPosix` from `NIOHTTP1` to maintain backward
@@ -57,16 +57,16 @@ let includePrivacyManifest = false
 let package = Package(
     name: "swift-nio",
     products: [
-        .library(name: "NIOCore", targets: ["NIOCore"]),
-        .library(name: "NIO", targets: ["NIO"]),
-        .library(name: "NIOEmbedded", targets: ["NIOEmbedded"]),
-        .library(name: "NIOPosix", targets: ["NIOPosix"]),
+        .library(name: "CandleNIOCore", targets: ["CandleNIOCore"]),
+        .library(name: "CandleNIO", targets: ["CandleNIO"]),
+        .library(name: "CandleNIOEmbedded", targets: ["CandleNIOEmbedded"]),
+        .library(name: "CandleNIOPosix", targets: ["CandleNIOPosix"]),
         .library(name: "_NIOConcurrency", targets: ["_NIOConcurrency"]),
-        .library(name: "NIOTLS", targets: ["NIOTLS"]),
-        .library(name: "NIOHTTP1", targets: ["NIOHTTP1"]),
-        .library(name: "NIOConcurrencyHelpers", targets: ["NIOConcurrencyHelpers"]),
-        .library(name: "NIOFoundationCompat", targets: ["NIOFoundationCompat"]),
-        .library(name: "NIOWebSocket", targets: ["NIOWebSocket"]),
+        .library(name: "CandleNIOTLS", targets: ["CandleNIOTLS"]),
+        .library(name: "CandleNIOHTTP1", targets: ["CandleNIOHTTP1"]),
+        .library(name: "CandleNIOConcurrencyHelpers", targets: ["CandleNIOConcurrencyHelpers"]),
+        .library(name: "CandleNIOFoundationCompat", targets: ["CandleNIOFoundationCompat"]),
+        .library(name: "CandleNIOWebSocket", targets: ["CandleNIOWebSocket"]),
         .library(name: "NIOTestUtils", targets: ["NIOTestUtils"]),
         .library(name: "_NIOFileSystem", targets: ["_NIOFileSystem", "NIOFileSystem"]),
         .library(name: "_NIOFileSystemFoundationCompat", targets: ["_NIOFileSystemFoundationCompat"]),
@@ -75,48 +75,48 @@ let package = Package(
         // MARK: - Targets
 
         .target(
-            name: "NIOCore",
+            name: "CandleNIOCore",
             dependencies: [
-                "NIOConcurrencyHelpers",
-                "_NIOBase64",
-                "CNIODarwin",
-                "CNIOLinux",
-                "CNIOWindows",
-                "CNIOWASI",
-                "_NIODataStructures",
+                "CandleNIOConcurrencyHelpers",
+                "Candle_NIOBase64",
+                "CandleCNIODarwin",
+                "CandleCNIOLinux",
+                "CandleCNIOWindows",
+                "CandleCNIOWASI",
+                "Candle_NIODataStructures",
                 swiftCollections,
                 swiftAtomics,
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .target(
-            name: "_NIODataStructures",
+            name: "Candle_NIODataStructures",
             swiftSettings: strictConcurrencySettings
         ),
         .target(
-            name: "_NIOBase64",
+            name: "Candle_NIOBase64",
             swiftSettings: strictConcurrencySettings
         ),
         .target(
-            name: "NIOEmbedded",
+            name: "CandleNIOEmbedded",
             dependencies: [
-                "NIOCore",
-                "NIOConcurrencyHelpers",
-                "_NIODataStructures",
+                "CandleNIOCore",
+                "CandleNIOConcurrencyHelpers",
+                "Candle_NIODataStructures",
                 swiftAtomics,
                 swiftCollections,
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .target(
-            name: "NIOPosix",
+            name: "CandleNIOPosix",
             dependencies: [
-                "CNIOLinux",
-                "CNIODarwin",
-                "CNIOWindows",
-                "NIOConcurrencyHelpers",
-                "NIOCore",
-                "_NIODataStructures",
+                "CandleCNIOLinux",
+                "CandleCNIODarwin",
+                "CandleCNIOWindows",
+                "CandleNIOConcurrencyHelpers",
+                "CandleNIOCore",
+                "Candle_NIODataStructures",
                 swiftAtomics,
             ],
             exclude: includePrivacyManifest ? [] : ["PrivacyInfo.xcprivacy"],
@@ -124,104 +124,104 @@ let package = Package(
             swiftSettings: strictConcurrencySettings
         ),
         .target(
-            name: "NIO",
+            name: "CandleNIO",
             dependencies: [
-                "NIOCore",
-                "NIOEmbedded",
-                "NIOPosix",
+                "CandleNIOCore",
+                "CandleNIOEmbedded",
+                "CandleNIOPosix",
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .target(
             name: "_NIOConcurrency",
             dependencies: [
-                .target(name: "NIO", condition: .when(platforms: historicalNIOPosixDependencyRequired)),
-                "NIOCore",
+                .target(name: "CandleNIO", condition: .when(platforms: historicalNIOPosixDependencyRequired)),
+                "CandleNIOCore",
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .target(
-            name: "NIOFoundationCompat",
+            name: "CandleNIOFoundationCompat",
             dependencies: [
-                .target(name: "NIO", condition: .when(platforms: historicalNIOPosixDependencyRequired)),
-                "NIOCore",
+                .target(name: "CandleNIO", condition: .when(platforms: historicalNIOPosixDependencyRequired)),
+                "CandleNIOCore",
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .target(
-            name: "CNIOAtomics",
+            name: "CandleCNIOAtomics",
             dependencies: [],
             cSettings: [
                 .define("_GNU_SOURCE")
             ]
         ),
         .target(
-            name: "CNIOSHA1",
+            name: "CandleCNIOSHA1",
             dependencies: []
         ),
         .target(
-            name: "CNIOLinux",
+            name: "CandleCNIOLinux",
             dependencies: [],
             cSettings: [
                 .define("_GNU_SOURCE")
             ]
         ),
         .target(
-            name: "CNIODarwin",
+            name: "CandleCNIODarwin",
             dependencies: [],
             cSettings: [
                 .define("__APPLE_USE_RFC_3542")
             ]
         ),
         .target(
-            name: "CNIOWindows",
+            name: "CandleCNIOWindows",
             dependencies: []
         ),
         .target(
-            name: "CNIOWASI",
+            name: "CandleCNIOWASI",
             dependencies: []
         ),
         .target(
-            name: "NIOConcurrencyHelpers",
+            name: "CandleNIOConcurrencyHelpers",
             dependencies: [
-                "CNIOAtomics"
+                "CandleCNIOAtomics"
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .target(
-            name: "NIOHTTP1",
+            name: "CandleNIOHTTP1",
             dependencies: [
-                .target(name: "NIO", condition: .when(platforms: historicalNIOPosixDependencyRequired)),
-                "NIOCore",
-                "NIOConcurrencyHelpers",
-                "CNIOLLHTTP",
+                .target(name: "CandleNIO", condition: .when(platforms: historicalNIOPosixDependencyRequired)),
+                "CandleNIOCore",
+                "CandleNIOConcurrencyHelpers",
+                "CandleCNIOLLHTTP",
                 swiftCollections,
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .target(
-            name: "NIOWebSocket",
+            name: "CandleNIOWebSocket",
             dependencies: [
-                .target(name: "NIO", condition: .when(platforms: historicalNIOPosixDependencyRequired)),
-                "NIOCore",
-                "NIOHTTP1",
-                "CNIOSHA1",
-                "_NIOBase64",
+                .target(name: "CandleNIO", condition: .when(platforms: historicalNIOPosixDependencyRequired)),
+                "CandleNIOCore",
+                "CandleNIOHTTP1",
+                "CandleCNIOSHA1",
+                "Candle_NIOBase64",
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .target(
-            name: "CNIOLLHTTP",
+            name: "CandleCNIOLLHTTP",
             cSettings: [
                 .define("_GNU_SOURCE"),
                 .define("LLHTTP_STRICT_MODE"),
             ]
         ),
         .target(
-            name: "NIOTLS",
+            name: "CandleNIOTLS",
             dependencies: [
-                .target(name: "NIO", condition: .when(platforms: historicalNIOPosixDependencyRequired)),
-                "NIOCore",
+                .target(name: "CandleNIO", condition: .when(platforms: historicalNIOPosixDependencyRequired)),
+                "CandleNIOCore",
                 swiftCollections,
             ],
             swiftSettings: strictConcurrencySettings
@@ -229,10 +229,10 @@ let package = Package(
         .target(
             name: "NIOTestUtils",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOEmbedded",
-                "NIOHTTP1",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOEmbedded",
+                "CandleNIOHTTP1",
                 swiftAtomics,
             ],
             swiftSettings: strictConcurrencySettings
@@ -240,10 +240,10 @@ let package = Package(
         .target(
             name: "_NIOFileSystem",
             dependencies: [
-                "NIOCore",
-                "NIOPosix",
-                "CNIOLinux",
-                "CNIODarwin",
+                "CandleNIOCore",
+                "CandleNIOPosix",
+                "CandleCNIOLinux",
+                "CandleCNIODarwin",
                 swiftAtomics,
                 swiftCollections,
                 swiftSystem,
@@ -267,7 +267,7 @@ let package = Package(
             name: "_NIOFileSystemFoundationCompat",
             dependencies: [
                 "_NIOFileSystem",
-                "NIOFoundationCompat",
+                "CandleNIOFoundationCompat",
             ],
             path: "Sources/NIOFileSystemFoundationCompat",
             swiftSettings: strictConcurrencySettings
@@ -278,8 +278,8 @@ let package = Package(
         .executableTarget(
             name: "NIOTCPEchoServer",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
+                "CandleNIOPosix",
+                "CandleNIOCore",
             ],
             exclude: ["README.md"],
             swiftSettings: strictConcurrencySettings
@@ -287,8 +287,8 @@ let package = Package(
         .executableTarget(
             name: "NIOTCPEchoClient",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
+                "CandleNIOPosix",
+                "CandleNIOCore",
             ],
             exclude: ["README.md"],
             swiftSettings: strictConcurrencySettings
@@ -296,9 +296,9 @@ let package = Package(
         .executableTarget(
             name: "NIOEchoServer",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOConcurrencyHelpers",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOConcurrencyHelpers",
             ],
             exclude: ["README.md"],
             swiftSettings: strictConcurrencySettings
@@ -306,9 +306,9 @@ let package = Package(
         .executableTarget(
             name: "NIOEchoClient",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOConcurrencyHelpers",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOConcurrencyHelpers",
             ],
             exclude: ["README.md"],
             swiftSettings: strictConcurrencySettings
@@ -316,10 +316,10 @@ let package = Package(
         .executableTarget(
             name: "NIOHTTP1Server",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOHTTP1",
-                "NIOConcurrencyHelpers",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOHTTP1",
+                "CandleNIOConcurrencyHelpers",
             ],
             exclude: ["README.md"],
             swiftSettings: strictConcurrencySettings
@@ -327,10 +327,10 @@ let package = Package(
         .executableTarget(
             name: "NIOHTTP1Client",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOHTTP1",
-                "NIOConcurrencyHelpers",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOHTTP1",
+                "CandleNIOConcurrencyHelpers",
             ],
             exclude: ["README.md"],
             swiftSettings: strictConcurrencySettings
@@ -338,9 +338,9 @@ let package = Package(
         .executableTarget(
             name: "NIOChatServer",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOConcurrencyHelpers",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOConcurrencyHelpers",
             ],
             exclude: ["README.md"],
             swiftSettings: strictConcurrencySettings
@@ -348,9 +348,9 @@ let package = Package(
         .executableTarget(
             name: "NIOChatClient",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOConcurrencyHelpers",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOConcurrencyHelpers",
             ],
             exclude: ["README.md"],
             swiftSettings: strictConcurrencySettings
@@ -358,10 +358,10 @@ let package = Package(
         .executableTarget(
             name: "NIOWebSocketServer",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOHTTP1",
-                "NIOWebSocket",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOHTTP1",
+                "CandleNIOWebSocket",
             ],
             exclude: ["README.md"],
             swiftSettings: strictConcurrencySettings
@@ -369,10 +369,10 @@ let package = Package(
         .executableTarget(
             name: "NIOWebSocketClient",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOHTTP1",
-                "NIOWebSocket",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOHTTP1",
+                "CandleNIOWebSocket",
             ],
             exclude: ["README.md"],
             swiftSettings: strictConcurrencySettings
@@ -380,16 +380,16 @@ let package = Package(
         .executableTarget(
             name: "NIOMulticastChat",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
+                "CandleNIOPosix",
+                "CandleNIOCore",
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .executableTarget(
             name: "NIOUDPEchoServer",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
+                "CandleNIOPosix",
+                "CandleNIOCore",
             ],
             exclude: ["README.md"],
             swiftSettings: strictConcurrencySettings
@@ -397,8 +397,8 @@ let package = Package(
         .executableTarget(
             name: "NIOUDPEchoClient",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
+                "CandleNIOPosix",
+                "CandleNIOCore",
             ],
             exclude: ["README.md"],
             swiftSettings: strictConcurrencySettings
@@ -406,9 +406,9 @@ let package = Package(
         .executableTarget(
             name: "NIOAsyncAwaitDemo",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOHTTP1",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOHTTP1",
             ],
             swiftSettings: strictConcurrencySettings
         ),
@@ -418,34 +418,34 @@ let package = Package(
         .executableTarget(
             name: "NIOPerformanceTester",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOEmbedded",
-                "NIOHTTP1",
-                "NIOFoundationCompat",
-                "NIOWebSocket",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOEmbedded",
+                "CandleNIOHTTP1",
+                "CandleNIOFoundationCompat",
+                "CandleNIOWebSocket",
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .executableTarget(
             name: "NIOCrashTester",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOEmbedded",
-                "NIOHTTP1",
-                "NIOWebSocket",
-                "NIOFoundationCompat",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOEmbedded",
+                "CandleNIOHTTP1",
+                "CandleNIOWebSocket",
+                "CandleNIOFoundationCompat",
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .testTarget(
             name: "NIOCoreTests",
             dependencies: [
-                "NIOConcurrencyHelpers",
-                "NIOCore",
-                "NIOEmbedded",
-                "NIOFoundationCompat",
+                "CandleNIOConcurrencyHelpers",
+                "CandleNIOCore",
+                "CandleNIOEmbedded",
+                "CandleNIOFoundationCompat",
                 swiftAtomics,
             ],
             swiftSettings: strictConcurrencySettings
@@ -453,53 +453,53 @@ let package = Package(
         .testTarget(
             name: "NIOEmbeddedTests",
             dependencies: [
-                "NIOConcurrencyHelpers",
-                "NIOCore",
-                "NIOEmbedded",
+                "CandleNIOConcurrencyHelpers",
+                "CandleNIOCore",
+                "CandleNIOEmbedded",
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .testTarget(
             name: "NIOPosixTests",
             dependencies: [
-                "NIOPosix",
-                "NIOCore",
-                "NIOFoundationCompat",
+                "CandleNIOPosix",
+                "CandleNIOCore",
+                "CandleNIOFoundationCompat",
                 "NIOTestUtils",
-                "NIOConcurrencyHelpers",
-                "NIOEmbedded",
-                "CNIOLinux",
-                "CNIODarwin",
-                "NIOTLS",
+                "CandleNIOConcurrencyHelpers",
+                "CandleNIOEmbedded",
+                "CandleCNIOLinux",
+                "CandleCNIODarwin",
+                "CandleNIOTLS",
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .testTarget(
             name: "NIOConcurrencyHelpersTests",
             dependencies: [
-                "NIOConcurrencyHelpers",
-                "NIOCore",
+                "CandleNIOConcurrencyHelpers",
+                "CandleNIOCore",
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .testTarget(
             name: "NIODataStructuresTests",
-            dependencies: ["_NIODataStructures"],
+            dependencies: ["Candle_NIODataStructures"],
             swiftSettings: strictConcurrencySettings
         ),
         .testTarget(
             name: "NIOBase64Tests",
-            dependencies: ["_NIOBase64"],
+            dependencies: ["Candle_NIOBase64"],
             swiftSettings: strictConcurrencySettings
         ),
         .testTarget(
             name: "NIOHTTP1Tests",
             dependencies: [
-                "NIOCore",
-                "NIOEmbedded",
-                "NIOPosix",
-                "NIOHTTP1",
-                "NIOFoundationCompat",
+                "CandleNIOCore",
+                "CandleNIOEmbedded",
+                "CandleNIOPosix",
+                "CandleNIOHTTP1",
+                "CandleNIOFoundationCompat",
                 "NIOTestUtils",
             ],
             swiftSettings: strictConcurrencySettings
@@ -507,10 +507,10 @@ let package = Package(
         .testTarget(
             name: "NIOTLSTests",
             dependencies: [
-                "NIOCore",
-                "NIOEmbedded",
-                "NIOTLS",
-                "NIOFoundationCompat",
+                "CandleNIOCore",
+                "CandleNIOEmbedded",
+                "CandleNIOTLS",
+                "CandleNIOFoundationCompat",
                 "NIOTestUtils",
             ],
             swiftSettings: strictConcurrencySettings
@@ -518,9 +518,9 @@ let package = Package(
         .testTarget(
             name: "NIOWebSocketTests",
             dependencies: [
-                "NIOCore",
-                "NIOEmbedded",
-                "NIOWebSocket",
+                "CandleNIOCore",
+                "CandleNIOEmbedded",
+                "CandleNIOWebSocket",
             ],
             swiftSettings: strictConcurrencySettings
         ),
@@ -528,34 +528,34 @@ let package = Package(
             name: "NIOTestUtilsTests",
             dependencies: [
                 "NIOTestUtils",
-                "NIOCore",
-                "NIOEmbedded",
-                "NIOPosix",
+                "CandleNIOCore",
+                "CandleNIOEmbedded",
+                "CandleNIOPosix",
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .testTarget(
             name: "NIOFoundationCompatTests",
             dependencies: [
-                "NIOCore",
-                "NIOFoundationCompat",
+                "CandleNIOCore",
+                "CandleNIOFoundationCompat",
             ],
             swiftSettings: strictConcurrencySettings
         ),
         .testTarget(
             name: "NIOTests",
-            dependencies: ["NIO"],
+            dependencies: ["CandleNIO"],
             swiftSettings: strictConcurrencySettings
         ),
         .testTarget(
             name: "NIOSingletonsTests",
-            dependencies: ["NIOCore", "NIOPosix"],
+            dependencies: ["CandleNIOCore", "CandleNIOPosix"],
             swiftSettings: strictConcurrencySettings
         ),
         .testTarget(
             name: "NIOFileSystemTests",
             dependencies: [
-                "NIOCore",
+                "CandleNIOCore",
                 "_NIOFileSystem",
                 swiftAtomics,
                 swiftCollections,
@@ -568,10 +568,10 @@ let package = Package(
         .testTarget(
             name: "NIOFileSystemIntegrationTests",
             dependencies: [
-                "NIOCore",
-                "NIOPosix",
+                "CandleNIOCore",
+                "CandleNIOPosix",
                 "_NIOFileSystem",
-                "NIOFoundationCompat",
+                "CandleNIOFoundationCompat",
             ],
             exclude: [
                 // Contains known files and directory structures used
