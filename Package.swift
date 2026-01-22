@@ -61,13 +61,11 @@ let package = Package(
         .library(name: "CandleNIO", targets: ["CandleNIO"]),
         .library(name: "CandleNIOEmbedded", targets: ["CandleNIOEmbedded"]),
         .library(name: "CandleNIOPosix", targets: ["CandleNIOPosix"]),
-        .library(name: "_NIOConcurrency", targets: ["_NIOConcurrency"]),
         .library(name: "CandleNIOTLS", targets: ["CandleNIOTLS"]),
         .library(name: "CandleNIOHTTP1", targets: ["CandleNIOHTTP1"]),
         .library(name: "CandleNIOConcurrencyHelpers", targets: ["CandleNIOConcurrencyHelpers"]),
         .library(name: "CandleNIOFoundationCompat", targets: ["CandleNIOFoundationCompat"]),
         .library(name: "CandleNIOWebSocket", targets: ["CandleNIOWebSocket"]),
-        .library(name: "NIOTestUtils", targets: ["NIOTestUtils"]),
     ],
     targets: [
         // MARK: - Targets
@@ -127,14 +125,6 @@ let package = Package(
                 "CandleNIOCore",
                 "CandleNIOEmbedded",
                 "CandleNIOPosix",
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .target(
-            name: "_NIOConcurrency",
-            dependencies: [
-                .target(name: "CandleNIO", condition: .when(platforms: historicalNIOPosixDependencyRequired)),
-                "CandleNIOCore",
             ],
             swiftSettings: strictConcurrencySettings
         ),
@@ -221,17 +211,6 @@ let package = Package(
                 .target(name: "CandleNIO", condition: .when(platforms: historicalNIOPosixDependencyRequired)),
                 "CandleNIOCore",
                 swiftCollections,
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .target(
-            name: "NIOTestUtils",
-            dependencies: [
-                "CandleNIOPosix",
-                "CandleNIOCore",
-                "CandleNIOEmbedded",
-                "CandleNIOHTTP1",
-                swiftAtomics,
             ],
             swiftSettings: strictConcurrencySettings
         ),
