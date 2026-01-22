@@ -68,8 +68,6 @@ let package = Package(
         .library(name: "CandleNIOFoundationCompat", targets: ["CandleNIOFoundationCompat"]),
         .library(name: "CandleNIOWebSocket", targets: ["CandleNIOWebSocket"]),
         .library(name: "NIOTestUtils", targets: ["NIOTestUtils"]),
-        .library(name: "_NIOFileSystem", targets: ["_NIOFileSystem", "NIOFileSystem"]),
-        .library(name: "_NIOFileSystemFoundationCompat", targets: ["_NIOFileSystemFoundationCompat"]),
     ],
     targets: [
         // MARK: - Targets
@@ -237,41 +235,6 @@ let package = Package(
             ],
             swiftSettings: strictConcurrencySettings
         ),
-        .target(
-            name: "_NIOFileSystem",
-            dependencies: [
-                "CandleNIOCore",
-                "CandleNIOPosix",
-                "CandleCNIOLinux",
-                "CandleCNIODarwin",
-                swiftAtomics,
-                swiftCollections,
-                swiftSystem,
-            ],
-            path: "Sources/NIOFileSystem",
-            exclude: includePrivacyManifest ? [] : ["PrivacyInfo.xcprivacy"],
-            resources: includePrivacyManifest ? [.copy("PrivacyInfo.xcprivacy")] : [],
-            swiftSettings: strictConcurrencySettings + [
-                .define("ENABLE_MOCKING", .when(configuration: .debug))
-            ]
-        ),
-        .target(
-            name: "NIOFileSystem",
-            dependencies: [
-                "_NIOFileSystem"
-            ],
-            path: "Sources/_NIOFileSystemExported",
-            swiftSettings: strictConcurrencySettings
-        ),
-        .target(
-            name: "_NIOFileSystemFoundationCompat",
-            dependencies: [
-                "_NIOFileSystem",
-                "CandleNIOFoundationCompat",
-            ],
-            path: "Sources/NIOFileSystemFoundationCompat",
-            swiftSettings: strictConcurrencySettings
-        ),
 
         // MARK: - Examples
 
@@ -436,156 +399,6 @@ let package = Package(
                 "CandleNIOHTTP1",
                 "CandleNIOWebSocket",
                 "CandleNIOFoundationCompat",
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOCoreTests",
-            dependencies: [
-                "CandleNIOConcurrencyHelpers",
-                "CandleNIOCore",
-                "CandleNIOEmbedded",
-                "CandleNIOFoundationCompat",
-                swiftAtomics,
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOEmbeddedTests",
-            dependencies: [
-                "CandleNIOConcurrencyHelpers",
-                "CandleNIOCore",
-                "CandleNIOEmbedded",
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOPosixTests",
-            dependencies: [
-                "CandleNIOPosix",
-                "CandleNIOCore",
-                "CandleNIOFoundationCompat",
-                "NIOTestUtils",
-                "CandleNIOConcurrencyHelpers",
-                "CandleNIOEmbedded",
-                "CandleCNIOLinux",
-                "CandleCNIODarwin",
-                "CandleNIOTLS",
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOConcurrencyHelpersTests",
-            dependencies: [
-                "CandleNIOConcurrencyHelpers",
-                "CandleNIOCore",
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIODataStructuresTests",
-            dependencies: ["Candle_NIODataStructures"],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOBase64Tests",
-            dependencies: ["Candle_NIOBase64"],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOHTTP1Tests",
-            dependencies: [
-                "CandleNIOCore",
-                "CandleNIOEmbedded",
-                "CandleNIOPosix",
-                "CandleNIOHTTP1",
-                "CandleNIOFoundationCompat",
-                "NIOTestUtils",
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOTLSTests",
-            dependencies: [
-                "CandleNIOCore",
-                "CandleNIOEmbedded",
-                "CandleNIOTLS",
-                "CandleNIOFoundationCompat",
-                "NIOTestUtils",
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOWebSocketTests",
-            dependencies: [
-                "CandleNIOCore",
-                "CandleNIOEmbedded",
-                "CandleNIOWebSocket",
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOTestUtilsTests",
-            dependencies: [
-                "NIOTestUtils",
-                "CandleNIOCore",
-                "CandleNIOEmbedded",
-                "CandleNIOPosix",
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOFoundationCompatTests",
-            dependencies: [
-                "CandleNIOCore",
-                "CandleNIOFoundationCompat",
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOTests",
-            dependencies: ["CandleNIO"],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOSingletonsTests",
-            dependencies: ["CandleNIOCore", "CandleNIOPosix"],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOFileSystemTests",
-            dependencies: [
-                "CandleNIOCore",
-                "_NIOFileSystem",
-                swiftAtomics,
-                swiftCollections,
-                swiftSystem,
-            ],
-            swiftSettings: strictConcurrencySettings + [
-                .define("ENABLE_MOCKING", .when(configuration: .debug))
-            ]
-        ),
-        .testTarget(
-            name: "NIOFileSystemIntegrationTests",
-            dependencies: [
-                "CandleNIOCore",
-                "CandleNIOPosix",
-                "_NIOFileSystem",
-                "CandleNIOFoundationCompat",
-            ],
-            exclude: [
-                // Contains known files and directory structures used
-                // for the integration tests. Exclude the whole tree from
-                // the build.
-                "Test Data"
-            ],
-            swiftSettings: strictConcurrencySettings
-        ),
-        .testTarget(
-            name: "NIOFileSystemFoundationCompatTests",
-            dependencies: [
-                "_NIOFileSystem",
-                "_NIOFileSystemFoundationCompat",
             ],
             swiftSettings: strictConcurrencySettings
         ),
