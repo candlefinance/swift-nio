@@ -16,7 +16,7 @@ import CandleAtomics
 import CandleDequeModule
 import CandleNIOConcurrencyHelpers
 import CandleNIOCore
-import Candle_NIODataStructures
+import _Candle_NIODataStructures
 
 #if canImport(Dispatch)
 import Dispatch

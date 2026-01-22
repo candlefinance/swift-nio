@@ -23,7 +23,7 @@ import Dispatch
 
 import CandleNIOConcurrencyHelpers
 import CandleNIOCore
-import Candle_NIODataStructures
+import _Candle_NIODataStructures
 
 /// An `EventLoop` that is thread safe and whose execution is fully controlled
 /// by the user.

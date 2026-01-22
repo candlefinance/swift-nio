@@ -12,7 +12,7 @@
 //
 //===----------------------------------------------------------------------===//
 
-import Candle_NIOBase64
+import _Candle_NIOBase64
 
 #if canImport(Dispatch)
 import Dispatch
