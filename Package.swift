@@ -386,15 +386,15 @@ let package = Package(
 
 if Context.environment["SWIFTCI_USE_LOCAL_DEPS"] == nil {
     package.dependencies += [
-        .package(name: "candle-swift-atomics", url: "https://github.com/candlefinance/candle-swift-atomics.git", branch: "fix-candle-1.2.0"),
-        .package(name: "candle-swift-collections", url: "https://github.com/candlefinance/candle-swift-collections.git", branch: "fix-candle-1.1.4"),
-        .package(name: "candle-swift-system", url: "https://github.com/candlefinance/candle-swift-system.git", branch: "fix-candle-1.4.2"),
+        .package(url: "https://github.com/candlefinance/candle-swift-atomics.git", branch: "fix-candle-1.2.0"),
+        .package(url: "https://github.com/candlefinance/candle-swift-collections.git", branch: "fix-candle-1.1.4"),
+        .package(url: "https://github.com/candlefinance/candle-swift-system.git", branch: "fix-candle-1.4.2"),
     ]
 } else {
     package.dependencies += [
-        .package(name: "candle-swift-atomics", path: "../swift-atomics"),
-        .package(name: "candle-swift-collections", path: "../swift-collections"),
-        .package(name: "candle-swift-system", path: "../swift-system"),
+        .package(path: "../swift-atomics"),
+        .package(path: "../swift-collections"),
+        .package(path: "../swift-system"),
     ]
 }
 
