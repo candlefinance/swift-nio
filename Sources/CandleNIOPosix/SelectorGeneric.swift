@@ -18,6 +18,8 @@ import CandleNIOCore
 #if os(Linux)
 import CandleCNIOLinux
 #endif
+
+@usableFromInline
 internal enum SelectorLifecycleState: Sendable {
     case open
     case closing
@@ -55,32 +57,42 @@ extension timespec {
 /// receives a connection reset, express interest with `[.read, .write, .reset]`.
 /// If then suddenly the socket becomes both readable and writable, the eventing mechanism will tell you about that
 /// fact using `[.read, .write]`.
+@usableFromInline
 struct SelectorEventSet: OptionSet, Equatable, Sendable {
+    @usableFromInline
     typealias RawValue = UInt8
+    @usableFromInline
     let rawValue: RawValue
 
     /// It's impossible to actually register for no events, therefore `_none` should only be used to bootstrap a set
     /// of flags or to compare against spurious wakeups.
+    @usableFromInline
     static let _none = SelectorEventSet([])
 
     /// Connection reset.
+    @usableFromInline
     static let reset = SelectorEventSet(rawValue: 1 << 0)
 
     /// EOF at the read/input end of a `Selectable`.
+    @usableFromInline
     static let readEOF = SelectorEventSet(rawValue: 1 << 1)
 
     /// Interest in/availability of data to be read
+    @usableFromInline
     static let read = SelectorEventSet(rawValue: 1 << 2)
 
     /// Interest in/availability of data to be written
+    @usableFromInline
     static let write = SelectorEventSet(rawValue: 1 << 3)
 
     /// EOF at the write/output end of a `Selectable`.
     ///
     /// - Note: This is rarely used because in many cases, there is no signal that this happened.
+    @usableFromInline
     static let writeEOF = SelectorEventSet(rawValue: 1 << 4)
 
     /// Error encountered.
+    @usableFromInline
     static let error = SelectorEventSet(rawValue: 1 << 5)
     init(rawValue: SelectorEventSet.RawValue) {
         self.rawValue = rawValue
@@ -146,38 +158,57 @@ protocol _SelectorBackendProtocol {
 /// There are specific subclasses  per API type with a shared common superclass providing overall scaffolding.
 
 // this is deliberately not thread-safe, only the wakeup() function may be called unprotectedly
+@usableFromInline
 internal class Selector<R: Registration> {
+    @usableFromInline
     var lifecycleState: SelectorLifecycleState
+    @usableFromInline
     var registrations = [Int: R]()
+    @usableFromInline
     var registrationID: SelectorRegistrationID = .initialRegistrationID
+    @usableFromInline
     let myThread: NIOThread
     // The rules for `self.selectorFD`, `self.eventFD`, and `self.timerFD`:
     // reads: `self.externalSelectorFDLock` OR access from the EventLoop thread
     // writes: `self.externalSelectorFDLock` AND access from the EventLoop thread
     let externalSelectorFDLock = NIOLock()
+    @usableFromInline
     var selectorFD: CInt = -1  // -1 == we're closed
 
     // Here we add the stored properties that are used by the specific backends
     #if canImport(Darwin)
+    @usableFromInline
     typealias EventType = kevent
     #elseif os(Linux) || os(Android)
     #if !SWIFTNIO_USE_IO_URING
+    @usableFromInline
     typealias EventType = Epoll.epoll_event
+    @usableFromInline
     var earliestTimer: NIODeadline = .distantFuture
+    @usableFromInline
     var eventFD: CInt = -1  // -1 == we're closed
+    @usableFromInline
     var timerFD: CInt = -1  // -1 == we're closed
     #else
+    @usableFromInline
     typealias EventType = URingEvent
+    @usableFromInline
     var eventFD: CInt = -1  // -1 == we're closed
+    @usableFromInline
     var ring = URing()
+    @usableFromInline
     let multishot = URing.io_uring_use_multishot_poll  // if true, we run with streaming multishot polls
+    @usableFromInline
     let deferReregistrations = true  // if true we only flush once at reentring whenReady() - saves syscalls
+    @usableFromInline
     var deferredReregistrationsPending = false  // true if flush needed when reentring whenReady()
     #endif
     #else
     #error("Unsupported platform, no suitable selector backend (we need kqueue or epoll support)")
     #endif
+    @usableFromInline
     var events: UnsafeMutablePointer<EventType>
+    @usableFromInline
     var eventsCapacity = 64
 
     internal func testsOnly_withUnsafeSelectorFD<T>(_ body: (CInt) throws -> T) throws -> T {
@@ -342,6 +373,7 @@ internal class Selector<R: Registration> {
 }
 
 extension Selector: CustomStringConvertible {
+    @usableFromInline
     var description: String {
         func makeDescription() -> String {
             "Selector { descriptor = \(self.selectorFD) }"
@@ -361,6 +393,7 @@ extension Selector: CustomStringConvertible {
 extension Selector: Sendable {}
 
 /// An event that is triggered once the `Selector` was able to select something.
+@usableFromInline
 struct SelectorEvent<R> {
     public let registration: R
     public var io: SelectorEventSet
@@ -429,6 +462,7 @@ extension Selector where R == NIORegistration {
 }
 
 /// The strategy used for the `Selector`.
+@usableFromInline
 enum SelectorStrategy: Sendable {
     /// Block until there is some IO ready to be processed or the `Selector` is explicitly woken up.
     case block
@@ -445,7 +479,9 @@ enum SelectorStrategy: Sendable {
 /// to mark events to allow for filtering of received return values to not be delivered to a
 /// new `Registration` instance that receives the same file descriptor. Ok if it wraps.
 /// Needed for i.e. testWeDoNotDeliverEventsForPreviouslyClosedChannels to succeed.
+@usableFromInline
 struct SelectorRegistrationID: Hashable, Sendable {
+    @usableFromInline
     var _rawValue: UInt32
 
     var rawValue: UInt32 {

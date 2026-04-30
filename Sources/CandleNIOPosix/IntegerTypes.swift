@@ -15,8 +15,9 @@
 // MARK: _UInt24
 
 /// A 24-bit unsigned integer value type.
+@usableFromInline
 struct _UInt24: Sendable {
-    var _backing: (UInt16, UInt8)
+    @usableFromInline var _backing: (UInt16, UInt8)
     init(_ value: UInt32) {
         assert(value & 0xff_00_00_00 == 0, "value \(value) too large for _UInt24")
         self._backing = IntegerBitPacking.unpackUInt16UInt8(value)
@@ -46,6 +47,7 @@ extension _UInt24: Equatable {
 }
 
 extension _UInt24: CustomStringConvertible {
+    @usableFromInline
     var description: String {
         UInt32(self).description
     }
@@ -55,7 +57,7 @@ extension _UInt24: CustomStringConvertible {
 
 /// A 56-bit unsigned integer value type.
 struct _UInt56: Sendable {
-    var _backing: (UInt32, UInt16, UInt8)
+    @usableFromInline var _backing: (UInt32, UInt16, UInt8)
 
     init(_ value: UInt64) {
         self._backing = IntegerBitPacking.unpackUInt32UInt16UInt8(value)

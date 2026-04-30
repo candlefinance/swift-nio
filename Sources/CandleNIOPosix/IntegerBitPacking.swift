@@ -11,6 +11,8 @@
 // SPDX-License-Identifier: Apache-2.0
 //
 //===----------------------------------------------------------------------===//
+
+@usableFromInline
 enum _IntegerBitPacking {}
 
 extension _IntegerBitPacking {
@@ -51,6 +53,8 @@ extension _IntegerBitPacking {
         return (Left(left), Right(right))
     }
 }
+
+@usableFromInline
 enum IntegerBitPacking {}
 
 extension IntegerBitPacking {

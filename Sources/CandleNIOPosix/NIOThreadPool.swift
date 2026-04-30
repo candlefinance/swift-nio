@@ -62,10 +62,14 @@ public final class NIOThreadPool {
 
     /// The work that should be done by the `NIOThreadPool`.
     public typealias WorkItem = @Sendable (WorkItemState) -> Void
+    @usableFromInline
     struct IdentifiableWorkItem: Sendable {
+        @usableFromInline
         var workItem: WorkItem
+        @usableFromInline
         var id: Int?
     }
+    @usableFromInline
     internal enum State: Sendable {
         /// The `NIOThreadPool` is already stopped.
         case stopped
@@ -79,6 +83,7 @@ public final class NIOThreadPool {
     }
 
     /// Whether threads in the pool have work.
+    @usableFromInline
     internal enum _WorkState: Hashable, Sendable {
         case hasWork
         case hasNoWork
@@ -91,8 +96,10 @@ public final class NIOThreadPool {
     // to wait for a given value. The value indicates whether the thread has some work to do. Work
     // in this case can be either processing a work item or exiting the threads processing
     // loop (i.e. shutting down).
+    @usableFromInline
     internal let _conditionLock: ConditionLock<_WorkState>
     private var threads: [NIOThread]? = nil  // protected by `conditionLock`
+    @usableFromInline
     internal var _state: State = .stopped
 
     // WorkItems don't have a handle so they can't be cancelled directly. Instead an ID is assigned
@@ -111,6 +118,7 @@ public final class NIOThreadPool {
     // be removed.
     //
     // Note: protected by 'lock'.
+    @usableFromInline
     internal var _cancelledWorkIDs: Set<Int> = []
     private let nextWorkID = ManagedAtomic(0)
 

@@ -426,39 +426,61 @@ internal func syscallForbiddingEINVAL<T: FixedWidthInteger>(
         return .processed(res)
     }
 }
+
+@usableFromInline
 internal enum Posix: Sendable {
     #if canImport(Darwin)
+    @usableFromInline
     static let UIO_MAXIOV: Int = 1024
+    @usableFromInline
     static let SHUT_RD: CInt = CInt(Darwin.SHUT_RD)
+    @usableFromInline
     static let SHUT_WR: CInt = CInt(Darwin.SHUT_WR)
+    @usableFromInline
     static let SHUT_RDWR: CInt = CInt(Darwin.SHUT_RDWR)
     #elseif os(Linux) || os(FreeBSD) || os(Android)
     #if canImport(Glibc)
+    @usableFromInline
     static let UIO_MAXIOV: Int = Int(Glibc.UIO_MAXIOV)
+    @usableFromInline
     static let SHUT_RD: CInt = CInt(Glibc.SHUT_RD)
+    @usableFromInline
     static let SHUT_WR: CInt = CInt(Glibc.SHUT_WR)
+    @usableFromInline
     static let SHUT_RDWR: CInt = CInt(Glibc.SHUT_RDWR)
     #elseif canImport(Musl)
+    @usableFromInline
     static let UIO_MAXIOV: Int = Int(Musl.UIO_MAXIOV)
+    @usableFromInline
     static let SHUT_RD: CInt = CInt(Musl.SHUT_RD)
+    @usableFromInline
     static let SHUT_WR: CInt = CInt(Musl.SHUT_WR)
+    @usableFromInline
     static let SHUT_RDWR: CInt = CInt(Musl.SHUT_RDWR)
     #elseif canImport(Android)
+    @usableFromInline
     static let UIO_MAXIOV: Int = Int(Android.UIO_MAXIOV)
+    @usableFromInline
     static let SHUT_RD: CInt = CInt(Android.SHUT_RD)
+    @usableFromInline
     static let SHUT_WR: CInt = CInt(Android.SHUT_WR)
+    @usableFromInline
     static let SHUT_RDWR: CInt = CInt(Android.SHUT_RDWR)
     #endif
     #else
+    @usableFromInline
     static var UIO_MAXIOV: Int {
         fatalError("unsupported OS")
     }
+    @usableFromInline
     static var SHUT_RD: Int {
         fatalError("unsupported OS")
     }
+    @usableFromInline
     static var SHUT_WR: Int {
         fatalError("unsupported OS")
     }
+    @usableFromInline
     static var SHUT_RDWR: Int {
         fatalError("unsupported OS")
     }
@@ -548,6 +570,7 @@ internal enum Posix: Sendable {
     @inline(never)
     @discardableResult
     // TODO: Allow varargs
+    @usableFromInline
     internal static func fcntl(descriptor: CInt, command: CInt, value: CInt) throws -> CInt {
         try syscall(blocking: false) {
             sysFcntl(descriptor, command, value)
@@ -1019,6 +1042,7 @@ extension Posix {
 #endif
 
 #if canImport(Darwin)
+@usableFromInline
 internal enum KQueue: Sendable {
 
     // TODO: Figure out how to specify a typealias to the kevent struct without run into trouble with the swift compiler
