@@ -94,6 +94,7 @@ struct SelectorEventSet: OptionSet, Equatable, Sendable {
     /// Error encountered.
     @usableFromInline
     static let error = SelectorEventSet(rawValue: 1 << 5)
+    @usableFromInline
     init(rawValue: SelectorEventSet.RawValue) {
         self.rawValue = rawValue
     }
@@ -503,10 +504,12 @@ struct SelectorRegistrationID: Hashable, Sendable {
         self._rawValue = rawValue
     }
 
+    @usableFromInline
     static func == (_ lhs: SelectorRegistrationID, _ rhs: SelectorRegistrationID) -> Bool {
         lhs._rawValue == rhs._rawValue
     }
 
+    @usableFromInline
     func hash(into hasher: inout Hasher) {
         hasher.combine(self._rawValue)
     }

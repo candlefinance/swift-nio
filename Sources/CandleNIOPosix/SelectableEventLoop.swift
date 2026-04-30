@@ -314,6 +314,7 @@ internal final class SelectableEventLoop: EventLoop, @unchecked Sendable {
     }
 
     /// - see: `EventLoop.scheduleTask(deadline:_:)`
+    @usableFromInline
     internal func scheduleTask<T>(deadline: NIODeadline, _ task: @escaping () throws -> T) -> Scheduled<T> {
         let promise: EventLoopPromise<T> = self.makePromise()
         let (task, scheduled) = self._prepareToSchedule(deadline: deadline, promise: promise, task: task)
@@ -328,6 +329,7 @@ internal final class SelectableEventLoop: EventLoop, @unchecked Sendable {
     }
 
     /// - see: `EventLoop.scheduleTask(in:_:)`
+    @usableFromInline
     internal func scheduleTask<T>(in: TimeAmount, _ task: @escaping () throws -> T) -> Scheduled<T> {
         self.scheduleTask(deadline: .now() + `in`, task)
     }
@@ -367,10 +369,12 @@ internal final class SelectableEventLoop: EventLoop, @unchecked Sendable {
         )
         return (task, scheduled)
     }
+    @usableFromInline
     func _executeIsolatedUnsafeUnchecked(_ task: @escaping () -> Void) {
         // nothing we can do if we fail enqueuing here.
         try? self._scheduleIsolated0(.immediate(.function(task)))
     }
+    @usableFromInline
     func _submitIsolatedUnsafeUnchecked<T>(_ task: @escaping () throws -> T) -> EventLoopFuture<T> {
         let promise = self.makePromise(of: T.self)
 
@@ -386,6 +390,7 @@ internal final class SelectableEventLoop: EventLoop, @unchecked Sendable {
         return promise.futureResult
     }
     @discardableResult
+    @usableFromInline
     func _scheduleTaskIsolatedUnsafeUnchecked<T>(
         deadline: NIODeadline,
         _ task: @escaping () throws -> T
@@ -402,6 +407,7 @@ internal final class SelectableEventLoop: EventLoop, @unchecked Sendable {
         return scheduled
     }
     @discardableResult
+    @usableFromInline
     func _scheduleTaskIsolatedUnsafeUnchecked<T>(
         in delay: TimeAmount,
         _ task: @escaping () throws -> T
@@ -410,6 +416,7 @@ internal final class SelectableEventLoop: EventLoop, @unchecked Sendable {
     }
 
     // - see: `EventLoop.execute`
+    @usableFromInline
     internal func execute(_ task: @escaping () -> Void) {
         // nothing we can do if we fail enqueuing here.
         try? self._schedule0(.immediate(.function(task)))
@@ -1021,6 +1028,7 @@ internal func assertExpression(_ body: () -> Bool) {
 }
 
 extension SelectableEventLoop {
+    @usableFromInline
     func scheduleCallback(
         at deadline: NIODeadline,
         handler: some NIOScheduledCallbackHandler
@@ -1030,6 +1038,7 @@ extension SelectableEventLoop {
         try self._schedule0(.scheduled(task))
         return NIOScheduledCallback(self, id: taskID)
     }
+    @usableFromInline
     func cancelScheduledCallback(_ scheduledCallback: NIOScheduledCallback) {
         guard let id = scheduledCallback.customCallbackID else {
             preconditionFailure("No custom ID for callback")
