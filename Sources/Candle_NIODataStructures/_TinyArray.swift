@@ -29,6 +29,7 @@
 /// It supports arbitrary many elements but if only up to one ``Element`` is stored it does **not** allocate separate storage on the heap
 /// and instead stores the ``Element`` inline.
 public struct _TinyArray<Element> {
+    @usableFromInline
     enum Storage {
         case one(Element)
         case arbitrary([Element])
@@ -116,6 +117,7 @@ extension _TinyArray {
 // MARK: - TinyArray.Storage "private" implementation
 
 extension _TinyArray.Storage: Equatable where Element: Equatable {
+    @usableFromInline
     static func == (lhs: Self, rhs: Self) -> Bool {
         switch (lhs, rhs) {
         case (.one(let lhs), .one(let rhs)):
@@ -136,6 +138,7 @@ extension _TinyArray.Storage: Equatable where Element: Equatable {
     }
 }
 extension _TinyArray.Storage: Hashable where Element: Hashable {
+    @usableFromInline
     func hash(into hasher: inout Hasher) {
         // same strategy as Array: https://github.com/apple/swift/blob/b42019005988b2d13398025883e285a81d323efa/stdlib/public/core/Array.swift#L1801
         hasher.combine(count)
@@ -147,6 +150,7 @@ extension _TinyArray.Storage: Hashable where Element: Hashable {
 extension _TinyArray.Storage: Sendable where Element: Sendable {}
 
 extension _TinyArray.Storage: RandomAccessCollection {
+    @usableFromInline
     subscript(position: Int) -> Element {
         get {
             switch self {
@@ -160,9 +164,11 @@ extension _TinyArray.Storage: RandomAccessCollection {
             }
         }
     }
+    @usableFromInline
     var startIndex: Int {
         0
     }
+    @usableFromInline
     var endIndex: Int {
         switch self {
         case .one: return 1
